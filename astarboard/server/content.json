@@ -1,0 +1,1424 @@
+{
+  "subjects": [
+    {
+      "slug": "english",
+      "name": "English Language",
+      "symbol": "En",
+      "blurb": "Linguistic frameworks for analysing any text, and how children acquire language.",
+      "topics": [
+        {
+          "slug": "language-frameworks",
+          "title": "Language Frameworks for Text Analysis",
+          "summary": "Lexis, grammar, phonology, pragmatics and discourse: the toolkit for analysing any text.",
+          "primer": [
+            {
+              "heading": "Why frameworks matter",
+              "body": "Examiners reward analysis that names a precise linguistic feature, gives an example from the text, and explains its effect in context: the writer's purpose, the audience and the genre. Feature-spotting without explaining effect scores poorly."
+            },
+            {
+              "heading": "Lexis, semantics and grammar",
+              "body": "Lexis and semantics cover word choice and meaning: register, connotation, semantic fields, jargon. Grammar covers morphology (how words are built) and syntax (how sentences are built): sentence functions (declarative, interrogative, imperative, exclamative), sentence types (simple, compound, complex), modal verbs that show certainty or obligation, and active versus passive voice, which changes who is foregrounded."
+            },
+            {
+              "heading": "Phonology, pragmatics and discourse",
+              "body": "Phonology covers sound: alliteration, rhythm, and in speech, prosodic features such as stress and intonation. Pragmatics covers meaning in context: implicature (what is implied), politeness strategies and deixis (words like \"here\", \"now\", \"you\" whose meaning depends on context). Discourse covers how a whole text is structured and how cohesion is created across it."
+            }
+          ],
+          "terms": [
+            [
+              "Modal verb",
+              "An auxiliary showing possibility or obligation: may, might, must, should."
+            ],
+            [
+              "Deixis",
+              "Words whose meaning depends on context, e.g. \"this\", \"there\", \"now\"."
+            ],
+            [
+              "Implicature",
+              "Meaning implied rather than stated."
+            ],
+            [
+              "Semantic field",
+              "A group of words linked by a shared area of meaning."
+            ]
+          ],
+          "questions": [
+            "Why is \"the writer uses a modal verb\" not enough on its own in an exam answer?",
+            "How does the passive voice change where a reader's attention falls?",
+            "How do deictic words build a sense of shared space between speaker and listener?"
+          ],
+          "cards": [
+            [
+              "Four sentence functions?",
+              "Declarative, interrogative, imperative, exclamative."
+            ],
+            [
+              "What is a modal verb? Give two.",
+              "An auxiliary verb expressing possibility, obligation or certainty, e.g. must, might."
+            ],
+            [
+              "Define deixis.",
+              "Words or phrases whose meaning depends on the context of utterance, e.g. \"here\", \"you\", \"tomorrow\"."
+            ],
+            [
+              "Define implicature.",
+              "Meaning that is implied by a speaker and inferred by a listener, beyond the literal words."
+            ],
+            [
+              "Effect of the passive voice?",
+              "Backgrounds or removes the agent, foregrounding the action or the person affected."
+            ],
+            [
+              "What does pragmatics study?",
+              "How meaning depends on context, including implicature, politeness and deixis."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "\"Mistakes were made.\" The main effect of this passive construction is to",
+              "options": [
+                "make the sentence more informal",
+                "avoid naming who made the mistakes",
+                "show future time",
+                "create a question"
+              ],
+              "answer": 1,
+              "explanation": "The agentless passive hides responsibility."
+            },
+            {
+              "prompt": "In \"Come here now\", the words \"here\" and \"now\" are examples of",
+              "options": [
+                "modal verbs",
+                "deixis",
+                "semantic fields",
+                "phonology"
+              ],
+              "answer": 1,
+              "explanation": "Their meaning depends on where and when the utterance is made."
+            },
+            {
+              "prompt": "\"It's cold in here,\" said to someone near an open window, implies \"please close it\". This is",
+              "options": [
+                "implicature",
+                "alliteration",
+                "a declarative modal",
+                "jargon"
+              ],
+              "answer": 0,
+              "explanation": "The request is implied, not stated: implicature."
+            },
+            {
+              "prompt": "Which sentence is imperative?",
+              "options": [
+                "The shop opens at nine.",
+                "Does the shop open at nine?",
+                "Open the window.",
+                "What a lovely day!"
+              ],
+              "answer": 2,
+              "explanation": "Imperatives give commands or instructions."
+            }
+          ]
+        },
+        {
+          "slug": "child-language-acquisition",
+          "title": "Child Language Acquisition",
+          "summary": "The stages of early speech and the theories that try to explain them.",
+          "primer": [
+            {
+              "heading": "Stages",
+              "body": "Approximate ages vary between children. Babbling begins at around 6 months. The holophrastic (one-word) stage starts at about 12 months, where a single word can stand for a whole idea (\"juice!\"). The two-word stage follows at about 18 months (\"daddy car\"), then the telegraphic stage at about 24 months, where function words are dropped (\"me want biscuit\"), and then the post-telegraphic stage."
+            },
+            {
+              "heading": "Theories",
+              "body": "Behaviourists such as Skinner argued children learn by imitation and reinforcement. Chomsky's nativist theory proposes an innate Language Acquisition Device, supported by the fact that children produce forms they have never heard. Piaget linked language to cognitive development. Interactionists such as Bruner (the Language Acquisition Support System) and Vygotsky (the zone of proximal development) stress the role of caregivers."
+            },
+            {
+              "heading": "Virtuous errors",
+              "body": "Overgeneralisation errors such as \"I goed\" or \"two mouses\" are called virtuous errors: the child has learnt a rule (add -ed for past tense, -s for plural) and applies it too widely. Because adults do not say \"goed\", these errors are evidence against pure imitation. Berko's \"wug\" test showed children apply plural rules to invented words."
+            }
+          ],
+          "terms": [
+            [
+              "Holophrase",
+              "A single word used to express a whole idea."
+            ],
+            [
+              "Telegraphic speech",
+              "Utterances with function words left out: \"me want biscuit\"."
+            ],
+            [
+              "Overgeneralisation",
+              "Applying a grammatical rule too widely: \"I runned\"."
+            ],
+            [
+              "Child-directed speech",
+              "The simplified, repetitive speech caregivers use with children."
+            ]
+          ],
+          "questions": [
+            "Why do errors like \"I goed\" challenge a purely behaviourist explanation?",
+            "What role do caregivers play in Bruner's and Vygotsky's theories?",
+            "Why should ages for each stage be treated as approximate?"
+          ],
+          "cards": [
+            [
+              "Approximate age of the two-word stage?",
+              "Around 18 months."
+            ],
+            [
+              "Example of telegraphic speech?",
+              "\"Me want biscuit\" (function words omitted)."
+            ],
+            [
+              "Chomsky's theory in one line?",
+              "Nativism: children have an innate Language Acquisition Device."
+            ],
+            [
+              "Bruner's contribution?",
+              "The Language Acquisition Support System: caregivers scaffold language learning."
+            ],
+            [
+              "What is a virtuous error?",
+              "A mistake caused by applying a learnt rule too widely, e.g. \"I goed\"."
+            ],
+            [
+              "What did Berko's wug test show?",
+              "Children apply grammatical rules (e.g. plural -s) to words they have never heard."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "A child says \"daddy car\". This is typical of the",
+              "options": [
+                "babbling stage",
+                "holophrastic stage",
+                "two-word stage",
+                "post-telegraphic stage"
+              ],
+              "answer": 2,
+              "explanation": "Two content words combined: the two-word stage, around 18 months."
+            },
+            {
+              "prompt": "\"I runned home\" is best explained as",
+              "options": [
+                "imitation of adults",
+                "overgeneralisation of a past-tense rule",
+                "a holophrase",
+                "child-directed speech"
+              ],
+              "answer": 1,
+              "explanation": "The child applies the regular -ed rule to an irregular verb."
+            },
+            {
+              "prompt": "The Language Acquisition Support System is associated with",
+              "options": [
+                "Skinner",
+                "Chomsky",
+                "Bruner",
+                "Piaget"
+              ],
+              "answer": 2,
+              "explanation": "Bruner proposed LASS to stress caregiver interaction."
+            },
+            {
+              "prompt": "Which evidence best supports nativism?",
+              "options": [
+                "Children copy adult accents",
+                "Children produce forms they have never heard",
+                "Parents praise correct speech",
+                "Children learn words for objects they see"
+              ],
+              "answer": 1,
+              "explanation": "Novel forms suggest an internal rule system rather than imitation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "mathematics",
+      "name": "Mathematics",
+      "symbol": "Ma",
+      "blurb": "Pure mathematics: the calculus at the centre of AS and A Level.",
+      "topics": [
+        {
+          "slug": "differentiation",
+          "title": "Differentiation Techniques",
+          "summary": "Standard derivatives, the chain, product and quotient rules, and stationary points.",
+          "primer": [
+            {
+              "heading": "Standard derivatives",
+              "body": "d/dx(xⁿ) = nxⁿ⁻¹. d/dx(eᵏˣ) = keᵏˣ. d/dx(ln x) = 1/x. With x in radians: d/dx(sin x) = cos x, d/dx(cos x) = −sin x, d/dx(tan x) = sec²x."
+            },
+            {
+              "heading": "Chain rule",
+              "body": "For a function of a function, y = f(g(x)), dy/dx = f′(g(x)) × g′(x): differentiate the outside, keep the inside, multiply by the derivative of the inside. For y = (3x² + 2)⁵, dy/dx = 5(3x² + 2)⁴ × 6x = 30x(3x² + 2)⁴."
+            },
+            {
+              "heading": "Product and quotient rules",
+              "body": "For y = uv, dy/dx = u(dv/dx) + v(du/dx). For y = u/v, dy/dx = (v(du/dx) − u(dv/dx)) / v². Identify u and v first and write down du/dx and dv/dx before substituting."
+            },
+            {
+              "heading": "Stationary points",
+              "body": "Solve dy/dx = 0. Classify with the second derivative: d²y/dx² > 0 gives a minimum, d²y/dx² < 0 a maximum. If it equals 0, test the gradient on either side."
+            }
+          ],
+          "terms": [
+            [
+              "Chain rule",
+              "dy/dx = dy/du × du/dx for composite functions."
+            ],
+            [
+              "Product rule",
+              "d(uv)/dx = u v′ + v u′."
+            ],
+            [
+              "Quotient rule",
+              "d(u/v)/dx = (v u′ − u v′) / v²."
+            ],
+            [
+              "Stationary point",
+              "A point where dy/dx = 0."
+            ]
+          ],
+          "questions": [
+            "How do you decide whether a function needs the chain, product or quotient rule?",
+            "Why must x be in radians for d/dx(sin x) = cos x?",
+            "When does the second derivative test fail to classify a stationary point?"
+          ],
+          "cards": [
+            [
+              "d/dx(eᵏˣ)?",
+              "keᵏˣ"
+            ],
+            [
+              "d/dx(ln x)?",
+              "1/x"
+            ],
+            [
+              "d/dx(tan x)?",
+              "sec²x"
+            ],
+            [
+              "State the product rule.",
+              "d(uv)/dx = u(dv/dx) + v(du/dx)"
+            ],
+            [
+              "State the quotient rule.",
+              "d(u/v)/dx = (v(du/dx) − u(dv/dx)) / v²"
+            ],
+            [
+              "d²y/dx² > 0 at a stationary point means…",
+              "A minimum."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Differentiate y = (3x² + 2)⁵.",
+              "options": [
+                "5(3x² + 2)⁴",
+                "30x(3x² + 2)⁴",
+                "6x(3x² + 2)⁴",
+                "15x(3x² + 2)⁴"
+              ],
+              "answer": 1,
+              "explanation": "Chain rule: 5(3x² + 2)⁴ × 6x."
+            },
+            {
+              "prompt": "Differentiate y = x²eˣ.",
+              "options": [
+                "2xeˣ",
+                "x²eˣ",
+                "eˣ(x² + 2x)",
+                "eˣ(2x + 1)"
+              ],
+              "answer": 2,
+              "explanation": "Product rule: 2x·eˣ + x²·eˣ."
+            },
+            {
+              "prompt": "Differentiate y = ln(5x).",
+              "options": [
+                "5/x",
+                "1/(5x)",
+                "1/x",
+                "ln 5"
+              ],
+              "answer": 2,
+              "explanation": "ln(5x) = ln 5 + ln x, so dy/dx = 1/x."
+            },
+            {
+              "prompt": "y = x³ − 3x has a stationary point at x = 1. It is a",
+              "options": [
+                "maximum",
+                "minimum",
+                "point of inflection",
+                "root"
+              ],
+              "answer": 1,
+              "explanation": "d²y/dx² = 6x = 6 > 0 at x = 1, so it is a minimum."
+            }
+          ]
+        },
+        {
+          "slug": "integration",
+          "title": "Integration",
+          "summary": "Integration as the reverse of differentiation, standard integrals, definite integrals and area.",
+          "primer": [
+            {
+              "heading": "Reverse of differentiation",
+              "body": "∫xⁿ dx = xⁿ⁺¹/(n + 1) + c for n ≠ −1. ∫(1/x) dx = ln|x| + c. Always include the constant of integration in an indefinite integral; examiners deduct marks when it is missing."
+            },
+            {
+              "heading": "Standard integrals",
+              "body": "∫eᵏˣ dx = (1/k)eᵏˣ + c. ∫cos kx dx = (1/k) sin kx + c. ∫sin kx dx = −(1/k) cos kx + c. Check by differentiating your answer."
+            },
+            {
+              "heading": "Definite integrals and area",
+              "body": "A definite integral ∫ₐᵇ f(x) dx = F(b) − F(a) has no constant. It gives the area between the curve and the x-axis when the curve is above the axis. Where the curve is below the axis the integral is negative, so split the interval at the roots and add the absolute values."
+            }
+          ],
+          "terms": [
+            [
+              "Indefinite integral",
+              "A family of antiderivatives, written with + c."
+            ],
+            [
+              "Definite integral",
+              "F(b) − F(a): a number, no constant."
+            ],
+            [
+              "Limits",
+              "The values a and b in ∫ₐᵇ."
+            ],
+            [
+              "Antiderivative",
+              "A function whose derivative is the integrand."
+            ]
+          ],
+          "questions": [
+            "Why does the rule for ∫xⁿ dx fail when n = −1?",
+            "Why does an area below the x-axis give a negative integral?",
+            "How can you check an integral is correct?"
+          ],
+          "cards": [
+            [
+              "∫xⁿ dx (n ≠ −1)?",
+              "xⁿ⁺¹/(n + 1) + c"
+            ],
+            [
+              "∫(1/x) dx?",
+              "ln|x| + c"
+            ],
+            [
+              "∫eᵏˣ dx?",
+              "(1/k)eᵏˣ + c"
+            ],
+            [
+              "∫cos kx dx?",
+              "(1/k) sin kx + c"
+            ],
+            [
+              "∫sin kx dx?",
+              "−(1/k) cos kx + c"
+            ],
+            [
+              "Definite integral ∫ₐᵇ f(x) dx?",
+              "F(b) − F(a), where F is an antiderivative of f."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Evaluate ∫₀² (3x² + 1) dx.",
+              "options": [
+                "8",
+                "10",
+                "12",
+                "14"
+              ],
+              "answer": 1,
+              "explanation": "[x³ + x] from 0 to 2 = 8 + 2 = 10."
+            },
+            {
+              "prompt": "∫e²ˣ dx =",
+              "options": [
+                "2e²ˣ + c",
+                "½e²ˣ + c",
+                "e²ˣ + c",
+                "e²ˣ/x + c"
+              ],
+              "answer": 1,
+              "explanation": "Divide by the coefficient of x: (1/2)e²ˣ + c."
+            },
+            {
+              "prompt": "The area between y = x² and the x-axis from x = 0 to x = 3 is",
+              "options": [
+                "3",
+                "6",
+                "9",
+                "27"
+              ],
+              "answer": 2,
+              "explanation": "[x³/3] from 0 to 3 = 27/3 = 9."
+            },
+            {
+              "prompt": "∫cos 3x dx =",
+              "options": [
+                "3 sin 3x + c",
+                "⅓ sin 3x + c",
+                "−⅓ sin 3x + c",
+                "sin 3x + c"
+              ],
+              "answer": 1,
+              "explanation": "Divide by 3: (1/3) sin 3x + c."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "physics",
+      "name": "Physics",
+      "symbol": "Ph",
+      "blurb": "Mechanics and oscillations, with the calculations examiners expect.",
+      "topics": [
+        {
+          "slug": "kinematics",
+          "title": "Kinematics and Projectiles",
+          "summary": "The equations of uniformly accelerated motion, free fall and projectile motion.",
+          "primer": [
+            {
+              "heading": "The suvat equations",
+              "body": "For constant acceleration: v = u + at; s = ut + ½at²; v² = u² + 2as; s = ½(u + v)t. List the three quantities you know and the one you want, then pick the equation that contains exactly those four."
+            },
+            {
+              "heading": "Free fall",
+              "body": "Near the Earth's surface, ignoring air resistance, every object accelerates downwards at g = 9.81 m s⁻². Choose a positive direction and keep signs consistent: with up as positive, a = −9.81 m s⁻²."
+            },
+            {
+              "heading": "Projectiles",
+              "body": "Treat horizontal and vertical motion separately; they share only the time of flight. Horizontally there is no force (ignoring air resistance), so velocity is constant. Vertically the motion is free fall. For a launch at angle θ with speed u, the components are u cos θ horizontally and u sin θ vertically."
+            }
+          ],
+          "terms": [
+            [
+              "Displacement",
+              "Distance in a specified direction (vector)."
+            ],
+            [
+              "Uniform acceleration",
+              "Acceleration that is constant in size and direction."
+            ],
+            [
+              "Time of flight",
+              "The total time a projectile is in the air."
+            ],
+            [
+              "Range",
+              "The horizontal distance travelled by a projectile."
+            ]
+          ],
+          "questions": [
+            "Why is the horizontal velocity of a projectile constant?",
+            "Which suvat equation would you use if time is not given or needed?",
+            "At the top of its path, what are a projectile's vertical velocity and acceleration?"
+          ],
+          "cards": [
+            [
+              "suvat equation without s?",
+              "v = u + at"
+            ],
+            [
+              "suvat equation without v?",
+              "s = ut + ½at²"
+            ],
+            [
+              "suvat equation without t?",
+              "v² = u² + 2as"
+            ],
+            [
+              "Value of g used at A Level?",
+              "9.81 m s⁻²"
+            ],
+            [
+              "Horizontal acceleration of a projectile (no air resistance)?",
+              "Zero: horizontal velocity is constant."
+            ],
+            [
+              "Vertical velocity at the top of a projectile's path?",
+              "Zero (acceleration is still 9.81 m s⁻² downwards)."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "A car accelerates from rest at 2.0 m s⁻² for 5.0 s. How far does it travel?",
+              "options": [
+                "10 m",
+                "25 m",
+                "50 m",
+                "5 m"
+              ],
+              "answer": 1,
+              "explanation": "s = ut + ½at² = 0 + ½ × 2.0 × 25 = 25 m."
+            },
+            {
+              "prompt": "A ball is dropped from 20 m. Time to reach the ground (g = 9.81 m s⁻²):",
+              "options": [
+                "1.4 s",
+                "2.0 s",
+                "4.1 s",
+                "2.9 s"
+              ],
+              "answer": 1,
+              "explanation": "t = √(2s/g) = √(40/9.81) ≈ 2.02 s."
+            },
+            {
+              "prompt": "A stone is thrown horizontally at 15 m s⁻¹ and lands 2.0 s later. Horizontal distance travelled:",
+              "options": [
+                "7.5 m",
+                "15 m",
+                "30 m",
+                "19.6 m"
+              ],
+              "answer": 2,
+              "explanation": "Horizontal velocity is constant: 15 × 2.0 = 30 m."
+            },
+            {
+              "prompt": "A ball is thrown vertically upwards at 19.6 m s⁻¹. Its maximum height is about",
+              "options": [
+                "9.8 m",
+                "19.6 m",
+                "39.2 m",
+                "2.0 m"
+              ],
+              "answer": 1,
+              "explanation": "v² = u² − 2gs with v = 0: s = 19.6² / (2 × 9.81) ≈ 19.6 m."
+            }
+          ]
+        },
+        {
+          "slug": "simple-harmonic-motion",
+          "title": "Simple Harmonic Motion",
+          "summary": "The defining equation a = −ω²x, its solutions, energy in SHM, and springs and pendulums.",
+          "primer": [
+            {
+              "heading": "Definition",
+              "body": "Motion is simple harmonic when the acceleration is proportional to the displacement from a fixed point and always directed towards that point: a = −ω²x, where ω = 2πf = 2π/T is the angular frequency."
+            },
+            {
+              "heading": "Solutions and maximum values",
+              "body": "If timing starts at maximum displacement, x = A cos ωt. Velocity v = ±ω√(A² − x²), so the maximum speed is ωA, at the equilibrium position. The maximum acceleration is ω²A, at the extremes of the motion."
+            },
+            {
+              "heading": "Springs, pendulums and energy",
+              "body": "A mass on a spring has T = 2π√(m/k). A simple pendulum, for small angles, has T = 2π√(l/g), independent of the mass and of the amplitude. In undamped SHM total energy is constant: kinetic energy is greatest at equilibrium and potential energy greatest at maximum displacement."
+            }
+          ],
+          "terms": [
+            [
+              "Angular frequency",
+              "ω = 2πf, in rad s⁻¹."
+            ],
+            [
+              "Amplitude",
+              "Maximum displacement from equilibrium."
+            ],
+            [
+              "Isochronous",
+              "Having a period independent of amplitude."
+            ],
+            [
+              "Damping",
+              "Loss of energy that reduces the amplitude over time."
+            ]
+          ],
+          "questions": [
+            "Why is the speed greatest at equilibrium but the acceleration greatest at the extremes?",
+            "Why does a pendulum's period not depend on its mass?",
+            "What happens to the energy when an oscillation is damped?"
+          ],
+          "cards": [
+            [
+              "Defining equation of SHM?",
+              "a = −ω²x"
+            ],
+            [
+              "Relationship between ω, f and T?",
+              "ω = 2πf = 2π/T"
+            ],
+            [
+              "Maximum speed in SHM?",
+              "v_max = ωA, at equilibrium."
+            ],
+            [
+              "Maximum acceleration in SHM?",
+              "a_max = ω²A, at maximum displacement."
+            ],
+            [
+              "Period of a mass on a spring?",
+              "T = 2π√(m/k)"
+            ],
+            [
+              "Period of a simple pendulum?",
+              "T = 2π√(l/g), for small angles."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "An object oscillates in SHM at 2.0 Hz with amplitude 0.050 m. Its maximum speed is",
+              "options": [
+                "0.10 m s⁻¹",
+                "0.31 m s⁻¹",
+                "0.63 m s⁻¹",
+                "7.9 m s⁻¹"
+              ],
+              "answer": 2,
+              "explanation": "v_max = ωA = 2π × 2.0 × 0.050 ≈ 0.63 m s⁻¹."
+            },
+            {
+              "prompt": "The length of a simple pendulum is quadrupled. Its period",
+              "options": [
+                "halves",
+                "stays the same",
+                "doubles",
+                "quadruples"
+              ],
+              "answer": 2,
+              "explanation": "T ∝ √l, and √4 = 2."
+            },
+            {
+              "prompt": "In SHM, acceleration is greatest when the object is",
+              "options": [
+                "at equilibrium",
+                "at maximum displacement",
+                "moving fastest",
+                "halfway to the extreme"
+              ],
+              "answer": 1,
+              "explanation": "a = −ω²x is largest in size where |x| is largest."
+            },
+            {
+              "prompt": "A 0.50 kg mass hangs on a spring with k = 200 N m⁻¹. The period is",
+              "options": [
+                "0.031 s",
+                "0.31 s",
+                "3.1 s",
+                "0.050 s"
+              ],
+              "answer": 1,
+              "explanation": "T = 2π√(0.50/200) = 2π × 0.050 ≈ 0.31 s."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "chemistry",
+      "name": "Chemistry",
+      "symbol": "Ch",
+      "blurb": "Physical chemistry: energy changes and how fast reactions go.",
+      "topics": [
+        {
+          "slug": "energetics",
+          "title": "Chemical Energetics",
+          "summary": "Enthalpy changes, calorimetry, Hess's law and bond enthalpies.",
+          "primer": [
+            {
+              "heading": "Enthalpy change",
+              "body": "ΔH is the heat energy change at constant pressure. Exothermic reactions have negative ΔH; endothermic reactions have positive ΔH. Standard conditions are 100 kPa and a stated temperature, usually 298 K. Standard enthalpy of formation is for forming 1 mol of a compound from its elements in their standard states; standard enthalpy of combustion is for burning 1 mol completely in oxygen."
+            },
+            {
+              "heading": "Calorimetry",
+              "body": "Heat transferred q = mcΔT, using the mass of the solution (1 cm³ ≈ 1 g) and c = 4.18 J g⁻¹ K⁻¹. Then ΔH = −q / n, where n is the moles of the limiting reactant. The sign is negative if the temperature rose."
+            },
+            {
+              "heading": "Hess's law and bond enthalpies",
+              "body": "Hess's law: the enthalpy change of a reaction is independent of the route taken. Build a cycle through formation or combustion data. With bond enthalpies, ΔH = Σ(bonds broken) − Σ(bonds formed). Bond enthalpies are averages over many compounds, so results differ slightly from experimental data."
+            }
+          ],
+          "terms": [
+            [
+              "Exothermic",
+              "Releases heat to the surroundings; ΔH negative."
+            ],
+            [
+              "Standard enthalpy of formation",
+              "ΔH when 1 mol of compound forms from its elements in standard states."
+            ],
+            [
+              "Hess's law",
+              "ΔH is independent of the route taken."
+            ],
+            [
+              "Mean bond enthalpy",
+              "Average energy to break 1 mol of a bond type in gaseous molecules."
+            ]
+          ],
+          "questions": [
+            "Why do calorimetry experiments usually give a less negative ΔH than data books?",
+            "Why can enthalpies of formation not always be measured directly?",
+            "Why do bond-enthalpy calculations give only approximate answers?"
+          ],
+          "cards": [
+            [
+              "Sign of ΔH for an exothermic reaction?",
+              "Negative."
+            ],
+            [
+              "Standard conditions?",
+              "100 kPa and a stated temperature, usually 298 K."
+            ],
+            [
+              "Formula for heat transferred in calorimetry?",
+              "q = mcΔT"
+            ],
+            [
+              "State Hess's law.",
+              "The enthalpy change for a reaction is independent of the route, provided start and end conditions are the same."
+            ],
+            [
+              "ΔH from bond enthalpies?",
+              "Σ(bonds broken) − Σ(bonds formed)"
+            ],
+            [
+              "Why are bond enthalpies approximate?",
+              "They are mean values averaged over many different compounds."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "C + O₂ → CO₂, ΔH = −394 kJ mol⁻¹; CO + ½O₂ → CO₂, ΔH = −283 kJ mol⁻¹. ΔH for C + ½O₂ → CO is",
+              "options": [
+                "−677 kJ mol⁻¹",
+                "−111 kJ mol⁻¹",
+                "+111 kJ mol⁻¹",
+                "−283 kJ mol⁻¹"
+              ],
+              "answer": 1,
+              "explanation": "Hess: −394 − (−283) = −111 kJ mol⁻¹."
+            },
+            {
+              "prompt": "Using H–H 436, Cl–Cl 243 and H–Cl 432 kJ mol⁻¹, ΔH for H₂ + Cl₂ → 2HCl is",
+              "options": [
+                "−185 kJ mol⁻¹",
+                "+185 kJ mol⁻¹",
+                "−247 kJ mol⁻¹",
+                "+247 kJ mol⁻¹"
+              ],
+              "answer": 0,
+              "explanation": "(436 + 243) − 2 × 432 = 679 − 864 = −185 kJ mol⁻¹."
+            },
+            {
+              "prompt": "0.025 mol of acid reacts in 50 cm³ of solution and the temperature rises by 6.0 K (c = 4.18 J g⁻¹ K⁻¹). ΔH is about",
+              "options": [
+                "−1.25 kJ mol⁻¹",
+                "−50 kJ mol⁻¹",
+                "+50 kJ mol⁻¹",
+                "−12.5 kJ mol⁻¹"
+              ],
+              "answer": 1,
+              "explanation": "q = 50 × 4.18 × 6.0 = 1254 J; ΔH = −1254 / 0.025 ≈ −50 kJ mol⁻¹."
+            },
+            {
+              "prompt": "A temperature fall during a reaction shows that the reaction is",
+              "options": [
+                "exothermic",
+                "endothermic",
+                "at equilibrium",
+                "catalysed"
+              ],
+              "answer": 1,
+              "explanation": "Heat is taken in from the surroundings, so ΔH is positive."
+            }
+          ]
+        },
+        {
+          "slug": "kinetics",
+          "title": "Reaction Kinetics",
+          "summary": "Rate equations, orders of reaction, half-life and the rate-determining step.",
+          "primer": [
+            {
+              "heading": "Rate equations",
+              "body": "For A + B → products, rate = k[A]ᵐ[B]ⁿ, where m and n are the orders with respect to each reactant and m + n is the overall order. Orders are found by experiment, not from the balanced equation. If doubling [A] doubles the rate, the order in A is 1; if it quadruples the rate, the order is 2; if the rate is unchanged, the order is 0."
+            },
+            {
+              "heading": "Units and half-life",
+              "body": "The units of k depend on the overall order: s⁻¹ for first order, mol⁻¹ dm³ s⁻¹ for second order, mol⁻² dm⁶ s⁻¹ for third order. A first-order reaction has a constant half-life, independent of concentration, and k = ln 2 / t½."
+            },
+            {
+              "heading": "Mechanisms and temperature",
+              "body": "The rate-determining step is the slowest step in a mechanism. Species in the rate equation appear in or before that step; a reactant with order zero is not involved until after it. Raising temperature increases k because a larger fraction of collisions have energy at least equal to the activation energy, as shown by the Arrhenius equation k = Ae^(−Ea/RT)."
+            }
+          ],
+          "terms": [
+            [
+              "Order of reaction",
+              "The power to which a concentration is raised in the rate equation."
+            ],
+            [
+              "Rate constant",
+              "k in the rate equation; changes with temperature."
+            ],
+            [
+              "Half-life",
+              "Time for a reactant's concentration to halve."
+            ],
+            [
+              "Rate-determining step",
+              "The slowest step in a reaction mechanism."
+            ]
+          ],
+          "questions": [
+            "Why can orders not be read from the stoichiometric equation?",
+            "How can a rate equation tell you about the mechanism?",
+            "Why does a small temperature rise cause a large increase in rate?"
+          ],
+          "cards": [
+            [
+              "General rate equation?",
+              "rate = k[A]ᵐ[B]ⁿ"
+            ],
+            [
+              "Doubling [A] quadruples the rate. Order in A?",
+              "Second order."
+            ],
+            [
+              "Units of k for a first-order reaction?",
+              "s⁻¹"
+            ],
+            [
+              "Units of k for a second-order reaction?",
+              "mol⁻¹ dm³ s⁻¹"
+            ],
+            [
+              "Half-life of a first-order reaction?",
+              "Constant, independent of concentration; t½ = ln 2 / k."
+            ],
+            [
+              "Arrhenius equation?",
+              "k = Ae^(−Ea/RT)"
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "rate = k[A][B]². The units of k are",
+              "options": [
+                "s⁻¹",
+                "mol⁻¹ dm³ s⁻¹",
+                "mol⁻² dm⁶ s⁻¹",
+                "mol dm⁻³ s⁻¹"
+              ],
+              "answer": 2,
+              "explanation": "Third order overall: k = rate / conc³ → mol⁻² dm⁶ s⁻¹."
+            },
+            {
+              "prompt": "A first-order reaction has a half-life of 20 s. What fraction of reactant remains after 60 s?",
+              "options": [
+                "1/3",
+                "1/4",
+                "1/8",
+                "1/6"
+              ],
+              "answer": 2,
+              "explanation": "Three half-lives: (1/2)³ = 1/8."
+            },
+            {
+              "prompt": "For NO₂ + CO → NO + CO₂, rate = k[NO₂]². This suggests that",
+              "options": [
+                "CO is a catalyst",
+                "CO is not involved in the rate-determining step",
+                "the reaction is first order overall",
+                "the equation is unbalanced"
+              ],
+              "answer": 1,
+              "explanation": "Zero order in CO means it reacts after the slow step."
+            },
+            {
+              "prompt": "Doubling [X] leaves the rate unchanged. The order with respect to X is",
+              "options": [
+                "0",
+                "1",
+                "2",
+                "−1"
+              ],
+              "answer": 0,
+              "explanation": "Rate independent of [X] means zero order."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "biology",
+      "name": "Biology",
+      "symbol": "Bi",
+      "blurb": "Biological molecules, enzymes and the flow of genetic information.",
+      "topics": [
+        {
+          "slug": "enzymes",
+          "title": "Enzymes",
+          "summary": "How enzymes work, the factors affecting their rate, and inhibition.",
+          "primer": [
+            {
+              "heading": "How enzymes work",
+              "body": "Enzymes are globular proteins that act as biological catalysts by lowering the activation energy of a reaction. The substrate binds to the active site, which has a specific tertiary structure, to form an enzyme–substrate complex. In the induced-fit model the active site changes shape slightly as the substrate binds, putting strain on bonds."
+            },
+            {
+              "heading": "Factors affecting rate",
+              "body": "Rising temperature increases kinetic energy and collisions until the optimum; above it, hydrogen and ionic bonds in the enzyme break, the active site changes shape and the enzyme is denatured. pH away from the optimum alters charges in the active site. Increasing substrate concentration raises the rate until all active sites are occupied and the rate reaches Vmax."
+            },
+            {
+              "heading": "Inhibition",
+              "body": "A competitive inhibitor has a shape similar to the substrate and binds to the active site; its effect can be overcome by raising substrate concentration, so Vmax is unchanged but more substrate is needed to reach it. A non-competitive inhibitor binds elsewhere (an allosteric site), changing the shape of the active site; adding more substrate does not overcome it, so Vmax falls."
+            }
+          ],
+          "terms": [
+            [
+              "Active site",
+              "The region of an enzyme where the substrate binds."
+            ],
+            [
+              "Induced fit",
+              "Active site changes shape slightly as the substrate binds."
+            ],
+            [
+              "Denaturation",
+              "Permanent change in tertiary structure that destroys the active site."
+            ],
+            [
+              "Vmax",
+              "Maximum rate, when all active sites are occupied."
+            ]
+          ],
+          "questions": [
+            "Why does rate fall sharply above the optimum temperature?",
+            "How could you tell from a graph whether an inhibitor is competitive?",
+            "Why is enzyme specificity linked to tertiary structure?"
+          ],
+          "cards": [
+            [
+              "How do enzymes speed up reactions?",
+              "They lower the activation energy."
+            ],
+            [
+              "Describe the induced-fit model.",
+              "The active site changes shape slightly as the substrate binds, forming a closer fit and straining bonds."
+            ],
+            [
+              "What happens above the optimum temperature?",
+              "Bonds holding the tertiary structure break, the active site changes shape and the enzyme denatures."
+            ],
+            [
+              "Competitive inhibitor: effect on Vmax?",
+              "Vmax unchanged; overcome by high substrate concentration."
+            ],
+            [
+              "Non-competitive inhibitor: where does it bind?",
+              "At an allosteric site, away from the active site."
+            ],
+            [
+              "Why does rate level off at high substrate concentration?",
+              "All active sites are occupied; enzyme concentration is limiting."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Adding more substrate overcomes the effect of an inhibitor. The inhibitor is most likely",
+              "options": [
+                "competitive",
+                "non-competitive",
+                "a denaturing agent",
+                "a coenzyme"
+              ],
+              "answer": 0,
+              "explanation": "Substrate out-competes a competitive inhibitor for the active site."
+            },
+            {
+              "prompt": "Why does an enzyme stop working at 70 °C?",
+              "options": [
+                "Molecules move too slowly",
+                "The active site changes shape as bonds break",
+                "The substrate is denatured",
+                "pH falls"
+              ],
+              "answer": 1,
+              "explanation": "Heat breaks hydrogen and ionic bonds, altering the tertiary structure."
+            },
+            {
+              "prompt": "Increasing substrate concentration no longer increases rate because",
+              "options": [
+                "the enzyme is denatured",
+                "all active sites are occupied",
+                "the substrate is inhibiting itself",
+                "activation energy has risen"
+              ],
+              "answer": 1,
+              "explanation": "At saturation the rate is limited by enzyme concentration."
+            },
+            {
+              "prompt": "A non-competitive inhibitor",
+              "options": [
+                "binds the active site",
+                "lowers Vmax",
+                "has the same shape as the substrate",
+                "is overcome by more substrate"
+              ],
+              "answer": 1,
+              "explanation": "It alters the active site from elsewhere, so some enzyme is effectively removed."
+            }
+          ]
+        },
+        {
+          "slug": "dna-and-protein-synthesis",
+          "title": "DNA Replication and Protein Synthesis",
+          "summary": "Semi-conservative replication, transcription and translation.",
+          "primer": [
+            {
+              "heading": "Semi-conservative replication",
+              "body": "DNA helicase unwinds the double helix and breaks the hydrogen bonds between bases. Each strand acts as a template; free nucleotides pair with complementary bases (A–T, C–G) and DNA polymerase joins them with phosphodiester bonds, working in the 5′ to 3′ direction. The lagging strand is made in short Okazaki fragments joined by DNA ligase. Each new molecule has one original and one new strand, as Meselson and Stahl showed using ¹⁵N and ¹⁴N."
+            },
+            {
+              "heading": "Transcription",
+              "body": "In the nucleus, RNA polymerase builds an mRNA copy of a gene using one DNA strand as the template, with uracil in place of thymine. In eukaryotes the pre-mRNA is spliced to remove introns before the mRNA leaves the nucleus through a nuclear pore."
+            },
+            {
+              "heading": "Translation",
+              "body": "At a ribosome, each mRNA codon (a triplet of bases) is matched by the complementary anticodon of a tRNA carrying a specific amino acid. Peptide bonds form between adjacent amino acids. The genetic code is degenerate (most amino acids have more than one codon), non-overlapping and universal."
+            }
+          ],
+          "terms": [
+            [
+              "Semi-conservative",
+              "Each new DNA molecule keeps one original strand."
+            ],
+            [
+              "Okazaki fragments",
+              "Short DNA sections made on the lagging strand."
+            ],
+            [
+              "Codon",
+              "A triplet of mRNA bases coding for one amino acid."
+            ],
+            [
+              "Anticodon",
+              "A tRNA triplet complementary to an mRNA codon."
+            ]
+          ],
+          "questions": [
+            "How did Meselson and Stahl rule out conservative replication?",
+            "Why is a lagging strand needed during replication?",
+            "Why might a single base substitution not change the protein?"
+          ],
+          "cards": [
+            [
+              "Role of DNA helicase?",
+              "Unwinds DNA and breaks hydrogen bonds between bases."
+            ],
+            [
+              "Role of DNA polymerase?",
+              "Joins nucleotides with phosphodiester bonds, 5′ to 3′."
+            ],
+            [
+              "Role of DNA ligase in replication?",
+              "Joins Okazaki fragments on the lagging strand."
+            ],
+            [
+              "Where does transcription happen in eukaryotes?",
+              "In the nucleus, using RNA polymerase."
+            ],
+            [
+              "What does \"degenerate\" mean for the genetic code?",
+              "Most amino acids are coded for by more than one codon."
+            ],
+            [
+              "tRNA anticodon for the codon AUG?",
+              "UAC"
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Bacteria grown in ¹⁵N are moved to ¹⁴N for one generation. Their DNA is",
+              "options": [
+                "all heavy",
+                "all light",
+                "all intermediate (hybrid)",
+                "half heavy, half light"
+              ],
+              "answer": 2,
+              "explanation": "Semi-conservative replication gives one ¹⁵N and one ¹⁴N strand in every molecule."
+            },
+            {
+              "prompt": "Which enzyme joins Okazaki fragments?",
+              "options": [
+                "DNA helicase",
+                "RNA polymerase",
+                "DNA ligase",
+                "DNA polymerase"
+              ],
+              "answer": 2,
+              "explanation": "DNA ligase seals the gaps between fragments."
+            },
+            {
+              "prompt": "The anticodon complementary to the codon GCA is",
+              "options": [
+                "CGT",
+                "CGU",
+                "GCA",
+                "UGC"
+              ],
+              "answer": 1,
+              "explanation": "RNA uses U instead of T: G–C, C–G, A–U."
+            },
+            {
+              "prompt": "How many bases in mRNA code for a polypeptide of 100 amino acids (ignoring the stop codon)?",
+              "options": [
+                "100",
+                "200",
+                "300",
+                "400"
+              ],
+              "answer": 2,
+              "explanation": "Each amino acid is coded by a triplet: 3 × 100 = 300."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "geography",
+      "name": "Geography",
+      "symbol": "Gg",
+      "blurb": "Physical systems: drainage basins and coastal landscapes.",
+      "topics": [
+        {
+          "slug": "hydrology",
+          "title": "Hydrology: Drainage Basins and Storm Hydrographs",
+          "summary": "The drainage basin as an open system, the water balance, and what controls a storm hydrograph.",
+          "primer": [
+            {
+              "heading": "The drainage basin system",
+              "body": "A drainage basin is an open system. Inputs: precipitation. Stores: interception, surface storage, soil water, groundwater and the channel. Flows: throughfall, stemflow, infiltration, overland flow, throughflow, percolation and groundwater flow. Outputs: evapotranspiration and channel discharge. The water balance is P = Q + E ± ΔS."
+            },
+            {
+              "heading": "Reading a storm hydrograph",
+              "body": "A storm hydrograph plots discharge (m³ s⁻¹) against time after a rainfall event. Lag time is the time between peak rainfall and peak discharge. The rising limb shows discharge increasing; the falling (recession) limb shows it returning towards baseflow, the slow contribution of groundwater."
+            },
+            {
+              "heading": "What makes a \"flashy\" hydrograph",
+              "body": "A short lag time and high peak result from impermeable rock or saturated soil, steep slopes, a circular basin with high drainage density, little vegetation and urbanisation, which adds impermeable surfaces and drains. Permeable rock, forest cover and an elongated basin lengthen the lag time and lower the peak."
+            }
+          ],
+          "terms": [
+            [
+              "Lag time",
+              "Time between peak rainfall and peak discharge."
+            ],
+            [
+              "Baseflow",
+              "River flow supplied by groundwater."
+            ],
+            [
+              "Throughflow",
+              "Water moving laterally through the soil."
+            ],
+            [
+              "Drainage density",
+              "Total stream length divided by basin area."
+            ]
+          ],
+          "questions": [
+            "Why does urbanisation shorten lag time?",
+            "How would the same storm produce different hydrographs in winter and summer?",
+            "Why is a drainage basin an open system while the global water cycle is closed?"
+          ],
+          "cards": [
+            [
+              "Water balance equation?",
+              "P = Q + E ± ΔS"
+            ],
+            [
+              "Define lag time.",
+              "The time between peak rainfall and peak discharge."
+            ],
+            [
+              "What is baseflow?",
+              "The part of river discharge supplied by groundwater."
+            ],
+            [
+              "Four factors giving a short lag time?",
+              "Impermeable rock, steep slopes, saturated soil, urbanisation (also high drainage density, little vegetation)."
+            ],
+            [
+              "Infiltration vs percolation?",
+              "Infiltration: water entering the soil. Percolation: water moving down from soil into rock."
+            ],
+            [
+              "Is a drainage basin open or closed?",
+              "Open: it has inputs and outputs of water."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Which change would most likely shorten lag time?",
+              "options": [
+                "Afforestation",
+                "Building a new housing estate",
+                "A drought before the storm",
+                "Permeable bedrock"
+              ],
+              "answer": 1,
+              "explanation": "Impermeable surfaces and drains move water to the channel quickly."
+            },
+            {
+              "prompt": "Baseflow is supplied mainly by",
+              "options": [
+                "overland flow",
+                "groundwater flow",
+                "interception",
+                "stemflow"
+              ],
+              "answer": 1,
+              "explanation": "Slow groundwater flow sustains discharge between storms."
+            },
+            {
+              "prompt": "In P = Q + E ± ΔS, Q stands for",
+              "options": [
+                "precipitation",
+                "discharge (runoff)",
+                "evapotranspiration",
+                "storage"
+              ],
+              "answer": 1,
+              "explanation": "Q is channel discharge."
+            },
+            {
+              "prompt": "A basin with high drainage density will typically have",
+              "options": [
+                "a long lag time",
+                "a low peak discharge",
+                "a short lag time and high peak",
+                "no baseflow"
+              ],
+              "answer": 2,
+              "explanation": "Many channels collect water quickly, giving a flashy response."
+            }
+          ]
+        },
+        {
+          "slug": "coastal-systems",
+          "title": "Coastal Systems and Landscapes",
+          "summary": "Waves, sediment movement, erosional and depositional landforms, and coastal management.",
+          "primer": [
+            {
+              "heading": "Waves",
+              "body": "Constructive waves are low, with a long wavelength and low frequency (about 6–8 per minute); the swash is stronger than the backwash, so they build beaches. Destructive waves are high and steep with a higher frequency (about 10–14 per minute); the backwash is stronger, so they remove material."
+            },
+            {
+              "heading": "Erosional landforms",
+              "body": "Where rock types alternate along a discordant coastline, softer rock erodes into bays and harder rock is left as headlands. Wave refraction concentrates energy on headlands, where a crack can enlarge into a cave, then an arch, a stack and finally a stump. Cliff retreat leaves a wave-cut platform at its base."
+            },
+            {
+              "heading": "Deposition and management",
+              "body": "Longshore drift moves sediment along the coast in the direction of the prevailing wind: swash moves up the beach at an angle, backwash returns straight down. Where the coastline changes direction, deposition can build a spit. Shoreline Management Plans divide coasts into sediment cells and choose a policy: hold the line, advance the line, managed realignment or no active intervention."
+            }
+          ],
+          "terms": [
+            [
+              "Swash",
+              "Water moving up the beach after a wave breaks."
+            ],
+            [
+              "Longshore drift",
+              "Movement of sediment along the coast by waves."
+            ],
+            [
+              "Sediment cell",
+              "A stretch of coast largely self-contained for sediment movement."
+            ],
+            [
+              "Managed realignment",
+              "Allowing the shoreline to move inland in a controlled way."
+            ]
+          ],
+          "questions": [
+            "Why do headlands erode even though they are made of harder rock?",
+            "How can a groyne protect one beach while causing erosion further along?",
+            "When might managed realignment be a better choice than holding the line?"
+          ],
+          "cards": [
+            [
+              "Constructive vs destructive waves?",
+              "Constructive: low, long wavelength, strong swash, build beaches. Destructive: high, frequent, strong backwash, remove material."
+            ],
+            [
+              "Sequence of headland erosion?",
+              "Crack → cave → arch → stack → stump."
+            ],
+            [
+              "What forms at the base of a retreating cliff?",
+              "A wave-cut platform."
+            ],
+            [
+              "Direction of longshore drift?",
+              "With the prevailing wind: swash at an angle, backwash straight down the beach."
+            ],
+            [
+              "Four Shoreline Management Plan policies?",
+              "Hold the line, advance the line, managed realignment, no active intervention."
+            ],
+            [
+              "How does a spit form?",
+              "Longshore drift continues to deposit sediment where the coastline changes direction."
+            ]
+          ],
+          "quiz": [
+            {
+              "prompt": "Waves with a strong swash and weak backwash are",
+              "options": [
+                "destructive",
+                "constructive",
+                "tidal",
+                "refracted"
+              ],
+              "answer": 1,
+              "explanation": "Constructive waves add material to the beach."
+            },
+            {
+              "prompt": "Which landform comes immediately after an arch collapses?",
+              "options": [
+                "Cave",
+                "Stump",
+                "Stack",
+                "Spit"
+              ],
+              "answer": 2,
+              "explanation": "The arch roof falls, leaving an isolated stack."
+            },
+            {
+              "prompt": "Allowing the sea to flood low-value farmland to create salt marsh is",
+              "options": [
+                "hold the line",
+                "managed realignment",
+                "advance the line",
+                "beach nourishment"
+              ],
+              "answer": 1,
+              "explanation": "The shoreline is moved inland in a controlled way."
+            },
+            {
+              "prompt": "Longshore drift moves sediment",
+              "options": [
+                "offshore only",
+                "in the direction of the prevailing wind",
+                "against the prevailing wind",
+                "only during storms"
+              ],
+              "answer": 1,
+              "explanation": "Swash follows the wind direction, moving sediment along the coast."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

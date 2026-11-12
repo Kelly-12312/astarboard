@@ -1,0 +1,2318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A*Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A Level preview, spaced review and practice questions for English Language, Mathematics, Physics, Chemistry, Biology and Geography.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rubik+Mono+One&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+/* A*Board — "Riso Zine" design system
+   Two-colour risograph print: fluorescent pink and blue overprinting on
+   off-white paper, navy ink, one yellow sticker colour. Big italic serif
+   headlines, a heavy mono for labels, a plain sans for reading. */
+
+:root {
+  --paper: #F4F0E8;
+  --paper-2: #EAE4D8;
+  --ink: #1D2B6B;
+  --ink-soft: #3D4A85;
+  --pink: #E0218A;        /* fills, shadows, large type */
+  --pink-ink: #C2126C;    /* pink for small text: passes 4.5:1 on paper */
+  --blue: #0078BF;
+  --blue-ink: #005E96;
+  --yellow: #FFE600;
+  --overprint: #001067;   /* pink × blue where they overlap */
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  --mono: 'Rubik Mono One', 'Arial Black', sans-serif;
+  --sans: 'Work Sans', system-ui, sans-serif;
+  --gutter: clamp(16px, 4vw, 40px);
+  --max: 1320px;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--paper); }
+body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.55; }
+a { color: var(--ink); }
+a:hover { color: var(--pink-ink); }
+:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
+img, svg { max-width: 100%; }
+h1, h2, h3 { margin: 0; line-height: 1; font-weight: 400; }
+p { margin: 0; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+
+/* ---------- type */
+.hand { font-family: var(--serif); font-style: italic; }
+.mono { font-family: var(--mono); }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); }
+.accent { color: var(--pink); }
+.label.accent, .step-tag.accent { color: var(--pink-ink); }
+.muted { color: var(--ink-soft); }
+.h2 { font-family: var(--serif); font-size: clamp(40px, 5vw, 64px); letter-spacing: -0.01em; }
+.h2-hand { font-family: var(--serif); font-style: italic; font-size: clamp(56px, 8vw, 112px); line-height: 0.88; }
+
+/* ---------- header and footer */
+.site-header { border-bottom: 3px solid var(--ink); background: var(--paper); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-top: 16px; padding-bottom: 16px; }
+.logo { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; color: var(--ink); }
+.logo-img { display: block; width: 52px; height: 52px; }
+.logo-word { font-family: var(--serif); font-style: italic; font-size: 34px; line-height: 1; }
+.logo:hover { color: var(--ink); }
+.nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; }
+.nav a { text-decoration: none; padding: 12px 0; }
+.nav a[aria-current="page"] { color: var(--pink-ink); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.nav .label { text-transform: none; font-family: var(--serif); font-style: italic; font-size: 22px; letter-spacing: 0; }
+.badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; margin-left: 6px; border-radius: 999px; background: var(--yellow); color: var(--ink); font-size: 11px; }
+.site-footer { border-top: 3px solid var(--ink); }
+.site-footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 18px; padding-bottom: 18px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+.ink-dots { display: flex; gap: 6px; }
+.ink-dots i { display: block; width: 14px; height: 14px; border-radius: 999px; }
+.ink-dots i:nth-child(1) { background: var(--pink); }
+.ink-dots i:nth-child(2) { background: var(--blue); }
+.ink-dots i:nth-child(3) { background: var(--yellow); }
+
+/* ---------- buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 12px 22px;
+  font-family: var(--mono); font-size: 14px; text-transform: uppercase; text-decoration: none; line-height: 1.2;
+  color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: 0;
+  box-shadow: 4px 4px 0 var(--ink); cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.btn:hover { color: var(--ink); background: var(--yellow); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+.btn-yellow { background: var(--pink); color: var(--paper); border-color: var(--pink); box-shadow: 5px 5px 0 var(--blue); font-size: 15px; }
+.btn-yellow:hover { background: var(--pink); color: var(--paper); box-shadow: 7px 7px 0 var(--blue); }
+.btn-solid { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--pink); }
+.btn-solid:hover { background: var(--ink); color: var(--yellow); }
+.btn-small { min-height: 44px; padding: 8px 14px; font-size: 12px; box-shadow: 3px 3px 0 var(--ink); }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.welcome-link { font-family: var(--mono); font-size: 12px; text-transform: uppercase; min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ---------- panels */
+.box { background: var(--paper); border: 2px solid var(--ink); padding: 28px; box-shadow: 7px 7px 0 var(--pink); }
+.box-yellow { background: var(--yellow); box-shadow: 7px 7px 0 var(--blue); }
+.box-dashed { border: 2px dashed var(--ink); padding: 28px; background: var(--paper-2); }
+.tilt-r { transform: rotate(0.8deg); }
+.tilt-l { transform: rotate(-0.8deg); }
+.grid { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.grid-3 { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.between { justify-content: space-between; }
+.step-tag { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--pink-ink); }
+.box h3, .card-title { font-family: var(--serif); font-style: italic; font-size: 42px; line-height: 0.95; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--ink); border-radius: 999px; padding: 3px 12px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--ink); background: var(--paper); }
+.chip-yellow { background: var(--yellow); }
+hr.rule { border: 0; border-top: 3px solid var(--ink); margin: 0; }
+section { padding-top: clamp(48px, 7vw, 96px); padding-bottom: clamp(48px, 7vw, 96px); }
+
+/* ---------- landing (the "issue" cover) */
+.z-cover { position: relative; overflow: hidden; padding-top: clamp(36px, 5vw, 64px); padding-bottom: clamp(64px, 8vw, 112px); min-height: 640px; }
+.z-dot { position: absolute; right: -60px; top: 30px; width: min(560px, 70vw); aspect-ratio: 1 / 1; border-radius: 999px; background-color: var(--pink); background-image: radial-gradient(var(--paper) 22%, transparent 24%); background-size: 14px 14px; mix-blend-mode: multiply; opacity: 0.9; pointer-events: none; }
+.z-block { position: absolute; right: 160px; top: 250px; width: min(420px, 55vw); aspect-ratio: 1 / 1; background: var(--blue); mix-blend-mode: multiply; transform: rotate(14deg); border-radius: 40px; opacity: 0.85; pointer-events: none; }
+.z-cover-text { position: relative; display: flex; flex-direction: column; gap: 18px; max-width: 900px; }
+.z-kicker { font-family: var(--mono); font-size: 13px; color: var(--pink-ink); }
+.z-title { font-family: var(--serif); font-size: clamp(88px, 14vw, 216px); line-height: 0.82; letter-spacing: -0.03em; text-shadow: 5px 4px 0 rgba(224, 33, 138, 0.55); }
+.z-lede { max-width: 520px; font-size: 21px; line-height: 1.5; font-weight: 500; background: var(--paper); padding: 4px 0; }
+.z-sticker { position: absolute; right: clamp(20px, 8vw, 140px); bottom: 70px; transform: rotate(-12deg); background: var(--yellow); color: var(--ink); font-family: var(--mono); font-size: 14px; padding: 14px 18px; border-radius: 999px; box-shadow: 3px 3px 0 var(--ink); }
+.z-contents { display: flex; flex-wrap: wrap; gap: 48px; }
+.z-contents h2 { flex: 1 1 260px; font-family: var(--serif); font-style: italic; font-size: clamp(54px, 7vw, 96px); line-height: 0.9; color: var(--pink); }
+.z-contents ol { flex: 999 1 560px; min-width: 0; margin: 0; padding: 0; list-style: none; }
+.z-contents li { display: flex; gap: 20px; align-items: baseline; padding: 14px 0; border-bottom: 2px solid var(--ink); }
+.z-contents li:last-child { border-bottom: 0; }
+.z-contents .pg { font-family: var(--mono); font-size: 13px; color: var(--pink-ink); min-width: 46px; }
+.z-contents .ttl { font-family: var(--serif); font-size: clamp(26px, 3vw, 34px); line-height: 1.1; }
+.z-steps { background: var(--blue); color: var(--paper); }
+.z-steps .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; }
+.z-steps .num { font-family: var(--serif); font-style: italic; font-size: 120px; line-height: 0.8; color: var(--yellow); }
+.z-steps h3 { font-family: var(--mono); font-size: 18px; text-transform: uppercase; }
+.z-final .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 30px; }
+.z-final h2 { flex: 1 1 480px; font-family: var(--serif); font-size: clamp(56px, 8vw, 120px); line-height: 0.88; letter-spacing: -0.02em; }
+
+/* ---------- app */
+main.app { min-height: 70vh; padding-top: 32px; padding-bottom: 96px; }
+main.app:focus, main.app:focus-visible { outline: none; }
+.page-head { display: flex; flex-direction: column; gap: 14px; margin-bottom: 44px; }
+.page-head h1 { font-family: var(--serif); font-size: clamp(60px, 8.4vw, 120px); line-height: 0.86; letter-spacing: -0.02em; }
+.page-head h1 .accent { font-style: italic; }
+.crumbs { font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--ink-soft); }
+.crumbs a { color: var(--ink-soft); }
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat .num { font-family: var(--serif); font-size: 104px; line-height: 0.8; }
+.box-yellow .num.accent { color: var(--ink); }
+.progress { height: 14px; border: 2px solid var(--ink); background: var(--paper); position: relative; overflow: hidden; }
+.progress span { position: absolute; top: 0; bottom: 0; left: 0; display: block; }
+.progress .p-review { background: var(--blue); opacity: 0.55; }
+.progress .p-master { background: var(--pink); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+.legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; border: 2px solid var(--ink); }
+.legend .l-review { background: var(--blue); opacity: 0.6; }
+.legend .l-master { background: var(--pink); }
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 0; border-top: 2px solid var(--ink); }
+.list li:last-child { border-bottom: 2px solid var(--ink); }
+.empty { font-family: var(--serif); font-style: italic; font-size: 30px; color: var(--ink-soft); }
+.subject-tile { display: flex; flex-direction: column; gap: 12px; text-decoration: none; min-height: 230px; color: var(--ink); }
+.subject-tile:hover { color: var(--ink); background: var(--yellow); }
+.subject-tile .sym { font-family: var(--serif); font-style: italic; font-size: 44px; line-height: 0.95; color: var(--ink); }
+.subject-tile p { font-size: 15px; }
+
+/* topic page */
+.tabs { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 40px; border: 2px solid var(--ink); width: fit-content; max-width: 100%; }
+.tabs a { font-family: var(--mono); font-size: 12px; text-transform: uppercase; text-decoration: none; padding: 14px 18px; min-height: 44px; }
+.tabs a + a { border-left: 2px solid var(--ink); }
+.tabs a[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.primer { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+.primer-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+.primer-side { flex: 1 1 300px; display: flex; flex-direction: column; gap: 28px; }
+.primer-main h2 { font-family: var(--serif); font-style: italic; font-size: 36px; margin-bottom: 10px; color: var(--pink); }
+.primer-main p { font-size: 18px; line-height: 1.75; max-width: 70ch; }
+.questions ol { margin: 0; padding-left: 26px; font-family: var(--serif); font-style: italic; font-size: 26px; line-height: 1.15; display: flex; flex-direction: column; gap: 14px; }
+.terms { width: 100%; border-collapse: collapse; }
+.terms th, .terms td { text-align: left; vertical-align: top; padding: 10px 0; border-top: 2px solid var(--ink); }
+.terms th { font-family: var(--serif); font-style: italic; font-size: 24px; font-weight: 400; padding-right: 16px; }
+.terms td { font-size: 15px; }
+
+/* quiz */
+.quiz { display: flex; flex-direction: column; gap: 32px; max-width: 880px; }
+.quiz fieldset { border: 2px solid var(--ink); padding: 22px 26px 26px; margin: 0; background: var(--paper); box-shadow: 6px 6px 0 var(--blue); }
+.quiz legend { padding: 4px 10px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; background: var(--yellow); border: 2px solid var(--ink); }
+.quiz .q-prompt { font-family: var(--serif); font-size: 28px; line-height: 1.15; margin-bottom: 16px; }
+.option { display: flex; align-items: center; gap: 14px; min-height: 50px; padding: 10px 14px; border: 2px solid var(--ink); margin-top: 10px; cursor: pointer; background: var(--paper); }
+.option:hover { background: var(--paper-2); }
+.option input { width: 20px; height: 20px; accent-color: var(--pink); flex: none; }
+.option.is-correct { background: var(--yellow); }
+.option.is-wrong { border-style: dashed; border-color: var(--pink-ink); background: rgba(224, 33, 138, 0.08); }
+.verdict { margin-top: 14px; font-family: var(--serif); font-style: italic; font-size: 24px; line-height: 1.2; }
+.verdict.ok { color: var(--blue-ink); }
+.verdict.no { color: var(--pink-ink); }
+.score { font-family: var(--serif); font-style: italic; font-size: clamp(88px, 12vw, 160px); line-height: 0.8; color: var(--pink); }
+
+/* review */
+.review { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 26px; }
+.flash { border: 2px solid var(--ink); padding: clamp(28px, 5vw, 56px); min-height: 340px; display: flex; flex-direction: column; gap: 24px; justify-content: center; background: var(--paper); box-shadow: 9px 9px 0 var(--pink), 18px 18px 0 var(--blue); }
+.flash .front { font-family: var(--serif); font-size: clamp(42px, 5.6vw, 68px); line-height: 1; }
+.flash .back { font-size: 21px; line-height: 1.5; border-top: 2px dashed var(--ink); padding-top: 22px; }
+.answer-form { display: flex; flex-direction: column; gap: 12px; border-top: 2px dashed var(--ink); padding-top: 22px; }
+.answer-form textarea { width: 100%; min-height: 96px; resize: vertical; padding: 12px 14px; background: var(--paper-2); color: var(--ink); border: 2px solid var(--ink); border-radius: 0; font-family: var(--serif); font-style: italic; font-size: 28px; line-height: 1.2; }
+.answer-form textarea::placeholder { color: var(--ink-soft); opacity: 0.7; }
+.answer-form textarea:focus { outline: none; border-color: var(--pink); background: var(--paper); }
+.compare { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); border-top: 2px dashed var(--ink); padding-top: 22px; }
+.compare > * { min-width: 0; }
+.compare .back { border-top: 0; padding-top: 0; }
+.mine { font-family: var(--serif); font-style: italic; font-size: 28px; line-height: 1.2; overflow-wrap: anywhere; white-space: pre-wrap; }
+.mine.is-empty { color: var(--ink-soft); }
+.grades { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.grade { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 66px; padding: 10px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer; font-family: var(--mono); font-size: 13px; text-transform: uppercase; box-shadow: 4px 4px 0 var(--ink); }
+.grade small { font-family: var(--sans); font-size: 13px; text-transform: none; }
+.grade:hover { background: var(--yellow); }
+.grade:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+.grade-again { box-shadow: 4px 4px 0 var(--pink); }
+.grade-easy { box-shadow: 4px 4px 0 var(--blue); }
+.grade.is-suggested { background: var(--yellow); outline: 3px solid var(--pink); outline-offset: 3px; }
+.kbd { font-family: var(--sans); font-size: 11px; border: 1.5px solid currentColor; padding: 0 5px; }
+
+/* forms */
+.auth { max-width: 540px; margin: 0 auto; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; }
+.field input { min-height: 52px; padding: 8px 2px; background: transparent; border: none; border-bottom: 3px solid var(--ink); color: var(--ink); font-family: var(--serif); font-style: italic; font-size: 30px; border-radius: 0; }
+.field input:focus { outline: none; border-bottom-color: var(--pink); }
+.error { color: var(--pink-ink); font-family: var(--serif); font-style: italic; font-size: 24px; min-height: 1em; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) rotate(-2deg); background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 12px 20px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; z-index: 10; max-width: calc(100vw - 32px); }
+.loading { font-family: var(--serif); font-style: italic; font-size: 36px; padding: 40px 0; }
+.cta { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-r, .tilt-l, .z-sticker, .toast { transform: none; }
+  .toast { transform: translateX(-50%); }
+  .btn, .grade { transition: none; }
+}
+
+/* =====================================================================
+   Glass + motion layer
+   Frosted "tracing paper" panels over drifting riso shapes, and
+   interactions with weight: stamped presses, ink bursts, cards that fly.
+   ===================================================================== */
+:root {
+  --glass: rgba(244, 240, 232, 0.58);
+  --glass-strong: rgba(244, 240, 232, 0.8);
+  --blur: blur(14px) saturate(150%);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* drifting riso shapes behind the app pages (the glass blurs them) */
+body { position: relative; }
+body::before, body::after { content: ""; position: fixed; z-index: -1; pointer-events: none; mix-blend-mode: multiply; }
+body::before {
+  width: 46vmax; aspect-ratio: 1 / 1; right: -12vmax; top: -10vmax; border-radius: 50%;
+  background-color: var(--pink); background-image: radial-gradient(var(--paper) 22%, transparent 24%); background-size: 16px 16px;
+  opacity: 0.26; animation: drift-a 26s ease-in-out infinite alternate;
+}
+body::after {
+  width: 34vmax; aspect-ratio: 1 / 1; left: -10vmax; bottom: -12vmax; border-radius: 48px;
+  background: var(--blue); opacity: 0.2; rotate: 14deg; animation: drift-b 32s ease-in-out infinite alternate;
+}
+body.landing::before, body.landing::after { display: none; }
+@keyframes drift-a { to { translate: -6vmax 8vmax; scale: 1.08; } }
+@keyframes drift-b { to { translate: 8vmax -6vmax; rotate: 32deg; } }
+
+/* glass surfaces */
+.box, .flash, .quiz fieldset, .site-header, .tabs, .option, .grade, .chip, .answer-form textarea, .z-glass {
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+.box, .flash, .quiz fieldset, .z-glass { background: linear-gradient(150deg, rgba(255, 255, 255, 0.6), var(--glass) 55%); }
+.box-yellow, .box.box-yellow { background: linear-gradient(150deg, rgba(255, 248, 160, 0.92), rgba(255, 230, 0, 0.78)); }
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--glass-strong); }
+.option, .grade, .chip { background: var(--glass); }
+.answer-form textarea { background: rgba(234, 228, 216, 0.6); }
+.z-glass { border: 2px solid var(--ink); padding: 22px 24px; box-shadow: 6px 6px 0 var(--blue); max-width: 580px; display: flex; flex-direction: column; gap: 18px; }
+.z-glass .z-lede { background: transparent; padding: 0; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .box, .flash, .quiz fieldset, .z-glass, .option, .grade { background: var(--paper); }
+  .site-header { background: var(--paper); }
+}
+
+/* glare that follows the pointer on tilting cards (set by fx.js) */
+.fx-tilt { position: relative; transition: transform 0.12s ease-out; will-change: transform; }
+.fx-tilt::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.4), transparent 60%);
+  opacity: 0; transition: opacity 0.2s;
+}
+.fx-tilt:hover::before { opacity: 1; }
+
+/* buttons that hit back */
+.btn, .grade { transition: transform 0.14s var(--spring), box-shadow 0.14s ease, background-color 0.15s, color 0.15s; }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+.btn-yellow:hover { box-shadow: 8px 8px 0 var(--blue); }
+.btn-solid:hover { box-shadow: 8px 8px 0 var(--pink); }
+.btn:active, .grade:active { transform: translate(4px, 4px) scale(0.97); box-shadow: 0 0 0 var(--ink); transition-duration: 0.04s; }
+.grade:hover { transform: translate(-2px, -3px) rotate(-1deg); }
+.option { transition: transform 0.15s var(--spring), background-color 0.15s, border-color 0.15s; }
+.option:hover { transform: translateX(4px); }
+.option:active { transform: scale(0.98); }
+.option:has(input:checked) { border-color: var(--blue); background: rgba(0, 120, 191, 0.12); box-shadow: 4px 4px 0 var(--blue); }
+
+/* ink burst on press (fx.js) */
+.fx-burst { position: fixed; z-index: 100; width: 0; height: 0; pointer-events: none; }
+.fx-burst i { position: absolute; left: 0; top: 0; width: var(--s, 8px); height: var(--s, 8px); border-radius: 50%; translate: -50% -50%; animation: fx-burst 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; }
+@keyframes fx-burst { to { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; } }
+
+/* page content prints in, piece by piece */
+@keyframes print-in { from { opacity: 0; transform: translateY(18px) rotate(-1deg); } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(16px) scale(0.92) rotate(-2deg); } }
+main.app > * { animation: print-in 0.5s var(--spring) backwards; }
+main.app > *:nth-child(2) { animation-delay: 0.06s; }
+main.app > *:nth-child(3) { animation-delay: 0.12s; }
+main.app > *:nth-child(4) { animation-delay: 0.18s; }
+main.app > *:nth-child(5) { animation-delay: 0.24s; }
+main.app > *:nth-child(n+6) { animation-delay: 0.3s; }
+.grid > *, .grid-3 > *, .stack > article, .quiz fieldset { animation: pop-in 0.55s var(--spring) backwards; }
+.grid > *:nth-child(2), .grid-3 > *:nth-child(2), .stack > article:nth-child(2), .quiz fieldset:nth-of-type(2) { animation-delay: 0.07s; }
+.grid > *:nth-child(3), .grid-3 > *:nth-child(3), .quiz fieldset:nth-of-type(3) { animation-delay: 0.14s; }
+.grid-3 > *:nth-child(4), .quiz fieldset:nth-of-type(4) { animation-delay: 0.21s; }
+.grid-3 > *:nth-child(5) { animation-delay: 0.28s; }
+.grid-3 > *:nth-child(n+6) { animation-delay: 0.35s; }
+.progress span { transition: width 0.9s var(--spring); }
+
+/* review card: deal in, flip on reveal, fly off on grade */
+main.app > .review { animation: none; }
+.flash { animation: card-in 0.45s var(--spring) backwards; transform-origin: 50% 100%; }
+.flash.is-revealed { animation: flip-in 0.5s var(--spring) backwards; }
+.flash.fly-out { animation: fly-out 0.24s ease-in forwards; }
+.flash.fly-again { animation: fly-again 0.3s ease-in forwards; }
+@keyframes card-in { from { opacity: 0; transform: translateY(34px) rotate(-3deg) scale(0.95); } }
+@keyframes flip-in { from { opacity: 0.3; transform: perspective(1200px) rotateY(-75deg); } }
+@keyframes fly-out { to { opacity: 0; transform: translateX(120%) rotate(14deg); } }
+@keyframes fly-again {
+  25% { transform: translateX(-14px) rotate(-2deg); }
+  50% { transform: translateX(12px) rotate(2deg); }
+  100% { opacity: 0; transform: translateY(70px) rotate(-6deg); }
+}
+.grade.is-suggested { animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { outline-offset: 7px; } }
+
+/* quiz feedback: right answers stamp down, wrong ones shake */
+.option.is-correct { animation: stamp 0.45s var(--spring); }
+.option.is-wrong { animation: shake 0.4s ease; }
+.verdict { animation: print-in 0.4s 0.15s backwards; }
+.score { display: inline-block; animation: score-pop 0.6s var(--spring) backwards; }
+@keyframes stamp { 0% { transform: scale(1.12) rotate(-2deg); } 60% { transform: scale(0.97); } }
+@keyframes shake { 20% { transform: translateX(-8px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
+@keyframes score-pop { from { opacity: 0; transform: scale(2.2) rotate(-8deg); } }
+.toast { animation: toast-in 0.45s var(--spring) backwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(40px) rotate(-8deg) scale(0.8); } }
+
+/* landing: parallax shapes, misregistered title, bobbing sticker, ticker */
+.z-dot { translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -40px); animation: breathe 9s ease-in-out infinite alternate; }
+.z-block { translate: calc(var(--px, 0) * 28px) calc(var(--py, 0) * 28px); }
+@keyframes breathe { to { scale: 1.05; } }
+.z-title { animation: misreg 7s ease-in-out infinite; }
+@keyframes misreg {
+  0%, 100% { text-shadow: 5px 4px 0 rgba(224, 33, 138, 0.55); }
+  50% { text-shadow: -4px 3px 0 rgba(224, 33, 138, 0.55), 3px -2px 0 rgba(0, 120, 191, 0.4); }
+}
+.z-sticker { animation: bob 2.6s ease-in-out infinite; transition: transform 0.2s var(--spring); }
+.z-sticker:hover { transform: rotate(4deg) scale(1.12); }
+@keyframes bob { 50% { translate: 0 -8px; } }
+.z-ticker { overflow: hidden; background: var(--pink); color: var(--paper); border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); padding: 0; }
+.z-ticker-track { display: flex; width: max-content; animation: ticker 30s linear infinite; }
+.z-ticker span { font-family: var(--mono); font-size: 15px; text-transform: uppercase; padding: 14px 0; white-space: nowrap; }
+.z-ticker span::after { content: "✶"; margin: 0 22px; color: var(--yellow); }
+@keyframes ticker { to { transform: translateX(-50%); } }
+.z-contents li { transition: transform 0.2s var(--spring); }
+.z-contents li:hover { transform: translateX(12px); }
+.z-contents li:hover .pg { color: var(--ink); background: var(--yellow); }
+.z-steps { background-color: var(--blue); background-image: radial-gradient(rgba(244, 240, 232, 0.18) 22%, transparent 24%); background-size: 18px 18px; }
+.z-steps .stack { border: 2px solid rgba(244, 240, 232, 0.55); padding: 22px; background: rgba(244, 240, 232, 0.1); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform 0.2s var(--spring), background-color 0.2s; }
+.z-steps .stack:hover { transform: translateY(-6px) rotate(-1deg); background: rgba(244, 240, 232, 0.18); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .z-ticker-track { transform: none; }
+}
+/* html carries the paper colour so the drifting shapes behind body stay visible */
+body { background: transparent; }
+.compare .back { border-top: 0; }
+.z-glass { width: fit-content; max-width: 100%; }
+
+/* ---------- reward points + Print Breaker */
+.nav-game { display: inline-flex; align-items: center; gap: 8px; }
+.pts-chip { font-family: var(--mono); font-size: 10px; background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); padding: 3px 7px; box-shadow: 2px 2px 0 var(--pink); white-space: nowrap; }
+.pts-chip.bump { animation: pts-bump 0.45s var(--spring); }
+@keyframes pts-bump { 40% { transform: scale(1.35) rotate(-6deg); } }
+.pts-pop { position: fixed; z-index: 120; pointer-events: none; translate: -50% 0; font-family: var(--mono); font-size: 18px; color: var(--pink); -webkit-text-stroke: 1px var(--ink); animation: pts-pop 1.05s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; }
+@keyframes pts-pop { 0% { transform: scale(0.4); opacity: 0; } 20% { transform: scale(1.3); opacity: 1; } 100% { transform: translateY(34px) scale(1); opacity: 0; } }
+.pts-line { flex-basis: 100%; margin: 0; font-size: 15px; }
+.box-pink-soft { background: linear-gradient(150deg, rgba(255, 255, 255, 0.6), rgba(224, 33, 138, 0.14)); box-shadow: 7px 7px 0 var(--blue); }
+.game-promo { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+.champion-badge { display: inline-block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; background: var(--ink); color: var(--yellow); padding: 4px 9px; transform: rotate(-3deg); margin-left: 8px; box-shadow: 3px 3px 0 var(--pink); }
+.champion-badge[hidden] { display: none; }
+
+.game-top { margin-bottom: 18px; gap: 20px; }
+.game-points { font-family: var(--serif); font-style: italic; font-size: 64px; line-height: 1; color: var(--pink); }
+.level-track { list-style: none; margin: 0; padding: 0; display: flex; gap: 10px; flex-wrap: wrap; }
+.level-track li { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.level-track span { width: 42px; height: 42px; display: grid; place-items: center; font-family: var(--mono); font-size: 14px; border: 2px solid var(--ink); background: var(--paper); transition: transform 0.3s var(--spring); }
+.level-track em { font-style: normal; font-size: 11px; max-width: 74px; text-align: center; color: var(--ink-soft); line-height: 1.2; }
+.level-track .done span { background: var(--blue); color: var(--paper); }
+.level-track .current span { background: var(--yellow); box-shadow: 3px 3px 0 var(--pink); transform: rotate(-4deg) scale(1.08); }
+.level-track .locked span { border-style: dashed; color: var(--ink-soft); }
+.level-track .prize span { border-radius: 50%; font-size: 18px; }
+.level-track .prize.locked span { color: var(--pink-ink); }
+
+.game-wrap { position: relative; border: 2px solid var(--ink); box-shadow: 9px 9px 0 var(--pink), 9px 9px 0 2px var(--ink); background: var(--paper); max-width: 960px; margin: 0 auto; }
+.game-wrap canvas { display: block; width: 100%; height: auto; aspect-ratio: 800 / 520; touch-action: none; cursor: none; outline: none; }
+.game-wrap canvas:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+.game-hud { display: flex; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 2px solid var(--ink); font-family: var(--mono); font-size: 11px; text-transform: uppercase; background: var(--glass-strong, rgba(244, 240, 232, 0.85)); }
+#hudLives { color: var(--pink); font-size: 14px; letter-spacing: 2px; }
+.game-overlay { position: absolute; inset: 42px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 24px; background: rgba(244, 240, 232, 0.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.game-overlay[hidden] { display: none; }
+.game-overlay .h2 { margin: 0; font-size: clamp(34px, 6vw, 60px); }
+.game-overlay p { margin: 0; max-width: 440px; }
+.game-overlay .btn-row { justify-content: center; margin-top: 6px; }
+.game-overlay.pop > * { animation: overlay-in 0.5s var(--spring) backwards; }
+.game-overlay.pop > *:nth-child(2) { animation-delay: 0.06s; }
+.game-overlay.pop > *:nth-child(3) { animation-delay: 0.12s; }
+.game-overlay.pop > *:nth-child(4) { animation-delay: 0.18s; }
+@keyframes overlay-in { from { transform: translateY(18px) scale(0.92); opacity: 0; } }
+.game-overlay.is-prize { background: radial-gradient(circle at 50% 40%, rgba(255, 230, 0, 0.7), rgba(244, 240, 232, 0.7) 60%); }
+.prize-stamp { width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-size: 56px; background: var(--pink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--blue); transform: rotate(-10deg); }
+.game-overlay.pop .prize-stamp { animation: stamp-in 0.7s var(--spring) backwards; }
+@keyframes stamp-in { from { transform: rotate(-40deg) scale(2.6); opacity: 0; } }
+@media (max-width: 600px) {
+  .game-points { font-size: 48px; }
+  .level-track em { display: none; }
+  .game-overlay { inset: 38px 0 0; padding: 14px; gap: 8px; }
+  .game-overlay p { font-size: 14px; }
+  .prize-stamp { width: 72px; height: 72px; font-size: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pts-chip.bump, .pts-pop, .game-overlay.pop > *, .game-overlay.pop .prize-stamp { animation: none; }
+}
+.game-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px 32px; margin: 8px 0 22px; }
+.game-title { margin: 4px 0 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 6vw, 76px); line-height: 0.95; letter-spacing: -0.01em; }
+.game-head .game-points { font-size: 56px; }
+.game-wrap { max-width: min(960px, max(320px, calc((100svh - 330px) * 1.54))); }
+@media (max-width: 600px) {
+  .game-head { gap: 10px 20px; margin-top: 0; }
+  .game-head .game-points { font-size: 42px; }
+  .game-overlay { position: static; background: var(--paper-2); border-top: 2px solid var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .game-overlay.is-prize { background: radial-gradient(circle at 50% 30%, rgba(255, 230, 0, 0.8), var(--paper-2) 70%); }
+}
+.game-title .accent { font-style: italic; }
+
+/* ---------- champion badges ("Print Shop" set, drawn by badges.js) */
+.badge-chip { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; padding: 2px 10px 2px 3px; border: 2px solid var(--ink); background: var(--paper); font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--ink); box-shadow: 3px 3px 0 var(--pink); vertical-align: middle; transform: rotate(-2deg); }
+.badge-chip svg { flex: none; }
+.promo-badge { display: block; line-height: 0; transition: transform 0.3s var(--spring); }
+.promo-badge:hover { transform: rotate(-6deg) scale(1.06); }
+.badge-art { overflow: visible; }
+.badge-art.tier-5 .holo-face { animation: holo-hue 5s linear infinite; }
+@keyframes holo-hue { to { filter: hue-rotate(360deg); } }
+
+.badge-panel { margin-top: 40px; display: flex; flex-direction: column; gap: 22px; }
+.badge-ladder { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.badge-ladder li { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 16px 8px 14px; border: 2px dashed rgba(29, 43, 107, 0.35); }
+.badge-ladder li strong { font-size: 16px; line-height: 1.2; margin-top: 6px; }
+.badge-ladder li small { font-size: 12px; color: var(--ink-soft); }
+.badge-ladder li .price { font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--pink-ink); }
+.badge-ladder li.owned { border: 2px solid var(--ink); background: rgba(255, 255, 255, 0.55); }
+.badge-ladder li.next { border: 2px solid var(--pink); box-shadow: 4px 4px 0 var(--pink); }
+.medal-art { line-height: 0; transition: transform 0.3s var(--spring); }
+.badge-ladder li.owned .medal-art:hover { transform: rotate(-6deg) scale(1.07); }
+.badge-ladder li.locked .medal-art { filter: grayscale(1); opacity: 0.32; }
+.badge-ladder li.next .medal-art { filter: grayscale(0.6); opacity: 0.75; }
+.badge-ladder li.just .medal-art { animation: stamp-in 0.7s var(--spring); }
+.game-overlay .prize-stamp { width: auto; height: auto; border: 0; border-radius: 0; background: none; box-shadow: none; transform: none; line-height: 0; }
+@media (max-width: 700px) {
+  .badge-ladder { grid-template-columns: 1fr; }
+  .badge-ladder li { display: grid; grid-template-columns: 64px 1fr; grid-template-rows: auto auto auto; column-gap: 14px; text-align: left; align-items: center; padding: 10px 12px; }
+  .badge-ladder li .medal-art { grid-row: 1 / 4; }
+  .badge-ladder li .medal-art svg { width: 64px; height: 64px; }
+  .badge-ladder li strong { margin: 0; }
+  .game-overlay .prize-stamp svg { width: 84px; height: 84px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge-art.tier-5 .holo-face, .badge-ladder li.just .medal-art { animation: none; }
+}
+
+[hidden] { display: none !important; }
+.site-footer .demo-note { padding-block: 12px; border-bottom: 2px dashed var(--ink); text-transform: none; font-family: var(--sans); font-size: 13px; }
+.demo-note button { background: var(--paper); border: 2px solid var(--ink); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); min-height: 40px; padding: 6px 14px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; cursor: pointer; }
+.demo-note button:hover { background: var(--yellow); }
+
+</style>
+</head>
+<body>
+
+
+<div id="landing" hidden>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#welcome"><img class="logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBKkJvYXJkIj48ZGVmcz48Y2xpcFBhdGggaWQ9InJwIj48Y2lyY2xlIGN4PSIyNyIgY3k9IjI4IiByPSIyMSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxjaXJjbGUgY3g9IjI3IiBjeT0iMjgiIHI9IjIxIiBmaWxsPSIjRTAyMThBIi8+PGNpcmNsZSBjeD0iMzYiIGN5PSIzNyIgcj0iMjEiIGZpbGw9IiMwMDc4QkYiLz48Y2lyY2xlIGN4PSIzNiIgY3k9IjM3IiByPSIyMSIgZmlsbD0iIzAwMTA2NyIgY2xpcC1wYXRoPSJ1cmwoI3JwKSIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMxIDMzKSBza2V3WCgtMTIpIHRyYW5zbGF0ZSgtMzEgLTMzKSI+PHBhdGggZD0iTTIwIDQ2IEwzMC41IDE3IEw0MSA0NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjRGMEU4IiBzdHJva2Utd2lkdGg9IjUuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0LjUgMzUuNSBMMzcgMzUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Y0RjBFOCIgc3Ryb2tlLXdpZHRoPSI1LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvZz48cGF0aCBkPSJNNDkuODIsMy41OCBMNTIuNzYsOC43MCBMNTguNjQsOC4yNyBMNTQuNjgsMTIuNjUgTDU2LjkwLDE4LjExIEw1MS41MiwxNS43MCBMNDcuMDEsMTkuNTEgTDQ3LjY0LDEzLjY0IEw0Mi42MywxMC41MiBMNDguNDAsOS4zMSBaIiBmaWxsPSIjRkZFNjAwIiBzdHJva2U9IiMxRDJCNkIiIHN0cm9rZS13aWR0aD0iMS42IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+Cg==" alt="" width="52" height="52"><span class="logo-word">A*Board</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#issue">In this issue</a>
+      <a href="#login" data-auth="signin2">Log in</a>
+      <a class="btn btn-small btn-solid" href="#register" data-auth="cta2">Subscribe free</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="z-cover">
+    <div class="z-dot" aria-hidden="true"></div>
+    <div class="z-block" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="z-cover-text">
+        <span class="z-kicker">ISSUE Nº 01 · A LEVEL · FREE</span>
+        <h1 class="z-title">The <em>A*</em><br>Issue</h1>
+        <div class="z-glass">
+          <div class="btn-row">
+            <a class="btn btn-yellow" href="#register" data-auth="cta">Get the issue</a>
+            <a class="welcome-link" href="#login" data-auth="signin">I already have an account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="z-sticker">10 MIN A DAY!</span>
+  </section>
+
+  <div class="z-ticker" aria-hidden="true">
+    <div class="z-ticker-track">
+      <span>English Language</span><span>Mathematics</span><span>Physics</span><span>Chemistry</span><span>Biology</span><span>Geography</span><span>Preview</span><span>Recall</span><span>Practise</span>
+      <span>English Language</span><span>Mathematics</span><span>Physics</span><span>Chemistry</span><span>Biology</span><span>Geography</span><span>Preview</span><span>Recall</span><span>Practise</span>
+    </div>
+  </div>
+
+  <section id="issue">
+    <div class="wrap z-contents">
+      <h2>In this<br>issue</h2>
+      <ol>
+        <li><span class="pg">p.04</span><span class="ttl">Mathematics: <em>calculus, taken apart</em></span></li>
+        <li><span class="pg">p.12</span><span class="ttl">Physics: <em>everything that swings</em></span></li>
+        <li><span class="pg">p.20</span><span class="ttl">Chemistry: <em>how fast is fast?</em></span></li>
+        <li><span class="pg">p.28</span><span class="ttl">Biology: <em>the lock, the key, the inhibitor</em></span></li>
+        <li><span class="pg">p.36</span><span class="ttl">Geography: <em>where the water goes</em></span></li>
+        <li><span class="pg">p.44</span><span class="ttl">English Language: <em>how toddlers crack grammar</em></span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="z-steps">
+    <div class="wrap">
+      <div class="stack"><span class="num">i.</span><h3>Read ahead</h3><p>A one-page primer for tomorrow's lesson, with the questions worth asking.</p></div>
+      <div class="stack"><span class="num">ii.</span><h3>Recall it</h3><p>Answer from memory. The cards you miss come back sooner.</p></div>
+      <div class="stack"><span class="num">iii.</span><h3>Prove it</h3><p>Exam-style questions, marked, with the reasoning written out.</p></div>
+    </div>
+  </section>
+
+  <section class="z-final">
+    <div class="wrap">
+      <h2>Next issue<br><em class="accent">lands tomorrow.</em></h2>
+      <a class="btn btn-solid" href="#register" data-auth="cta3">Subscribe free</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>A*Board · printed in pink &amp; blue</span>
+    <div class="ink-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+</footer>
+</div>
+
+<div id="appShell" hidden>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="#welcome"><img class="logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBKkJvYXJkIj48ZGVmcz48Y2xpcFBhdGggaWQ9InJwIj48Y2lyY2xlIGN4PSIyNyIgY3k9IjI4IiByPSIyMSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxjaXJjbGUgY3g9IjI3IiBjeT0iMjgiIHI9IjIxIiBmaWxsPSIjRTAyMThBIi8+PGNpcmNsZSBjeD0iMzYiIGN5PSIzNyIgcj0iMjEiIGZpbGw9IiMwMDc4QkYiLz48Y2lyY2xlIGN4PSIzNiIgY3k9IjM3IiByPSIyMSIgZmlsbD0iIzAwMTA2NyIgY2xpcC1wYXRoPSJ1cmwoI3JwKSIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMxIDMzKSBza2V3WCgtMTIpIHRyYW5zbGF0ZSgtMzEgLTMzKSI+PHBhdGggZD0iTTIwIDQ2IEwzMC41IDE3IEw0MSA0NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjRGMEU4IiBzdHJva2Utd2lkdGg9IjUuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0LjUgMzUuNSBMMzcgMzUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Y0RjBFOCIgc3Ryb2tlLXdpZHRoPSI1LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvZz48cGF0aCBkPSJNNDkuODIsMy41OCBMNTIuNzYsOC43MCBMNTguNjQsOC4yNyBMNTQuNjgsMTIuNjUgTDU2LjkwLDE4LjExIEw1MS41MiwxNS43MCBMNDcuMDEsMTkuNTEgTDQ3LjY0LDEzLjY0IEw0Mi42MywxMC41MiBMNDguNDAsOS4zMSBaIiBmaWxsPSIjRkZFNjAwIiBzdHJva2U9IiMxRDJCNkIiIHN0cm9rZS13aWR0aD0iMS42IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+Cg==" alt="" width="52" height="52"><span class="logo-word">A*Board</span></a>
+    <nav class="nav" id="nav" aria-label="App"></nav>
+  </div>
+</header>
+<main class="app wrap" id="view" tabindex="-1" aria-live="polite">
+  <p class="loading">printing your issue…</p>
+</main>
+<footer class="site-footer">
+  <div class="wrap demo-note">
+    <span>Accounts and progress are saved in this browser only.</span>
+    <button type="button" id="resetDemo">Reset demo data</button>
+  </div>
+  <div class="wrap">
+    <span>A*Board · preview · review · repeat</span>
+    <div class="ink-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+</footer>
+</div>
+
+<script>
+'use strict';
+const SUBJECTS = [{"slug": "english", "name": "English Language", "symbol": "En", "blurb": "Linguistic frameworks for analysing any text, and how children acquire language.", "topics": [{"slug": "language-frameworks", "title": "Language Frameworks for Text Analysis", "summary": "Lexis, grammar, phonology, pragmatics and discourse: the toolkit for analysing any text.", "primer": [{"heading": "Why frameworks matter", "body": "Examiners reward analysis that names a precise linguistic feature, gives an example from the text, and explains its effect in context: the writer's purpose, the audience and the genre. Feature-spotting without explaining effect scores poorly."}, {"heading": "Lexis, semantics and grammar", "body": "Lexis and semantics cover word choice and meaning: register, connotation, semantic fields, jargon. Grammar covers morphology (how words are built) and syntax (how sentences are built): sentence functions (declarative, interrogative, imperative, exclamative), sentence types (simple, compound, complex), modal verbs that show certainty or obligation, and active versus passive voice, which changes who is foregrounded."}, {"heading": "Phonology, pragmatics and discourse", "body": "Phonology covers sound: alliteration, rhythm, and in speech, prosodic features such as stress and intonation. Pragmatics covers meaning in context: implicature (what is implied), politeness strategies and deixis (words like \"here\", \"now\", \"you\" whose meaning depends on context). Discourse covers how a whole text is structured and how cohesion is created across it."}], "terms": [["Modal verb", "An auxiliary showing possibility or obligation: may, might, must, should."], ["Deixis", "Words whose meaning depends on context, e.g. \"this\", \"there\", \"now\"."], ["Implicature", "Meaning implied rather than stated."], ["Semantic field", "A group of words linked by a shared area of meaning."]], "questions": ["Why is \"the writer uses a modal verb\" not enough on its own in an exam answer?", "How does the passive voice change where a reader's attention falls?", "How do deictic words build a sense of shared space between speaker and listener?"], "cards": [["Four sentence functions?", "Declarative, interrogative, imperative, exclamative."], ["What is a modal verb? Give two.", "An auxiliary verb expressing possibility, obligation or certainty, e.g. must, might."], ["Define deixis.", "Words or phrases whose meaning depends on the context of utterance, e.g. \"here\", \"you\", \"tomorrow\"."], ["Define implicature.", "Meaning that is implied by a speaker and inferred by a listener, beyond the literal words."], ["Effect of the passive voice?", "Backgrounds or removes the agent, foregrounding the action or the person affected."], ["What does pragmatics study?", "How meaning depends on context, including implicature, politeness and deixis."]], "quiz": [{"prompt": "\"Mistakes were made.\" The main effect of this passive construction is to", "options": ["make the sentence more informal", "avoid naming who made the mistakes", "show future time", "create a question"], "answer": 1, "explanation": "The agentless passive hides responsibility."}, {"prompt": "In \"Come here now\", the words \"here\" and \"now\" are examples of", "options": ["modal verbs", "deixis", "semantic fields", "phonology"], "answer": 1, "explanation": "Their meaning depends on where and when the utterance is made."}, {"prompt": "\"It's cold in here,\" said to someone near an open window, implies \"please close it\". This is", "options": ["implicature", "alliteration", "a declarative modal", "jargon"], "answer": 0, "explanation": "The request is implied, not stated: implicature."}, {"prompt": "Which sentence is imperative?", "options": ["The shop opens at nine.", "Does the shop open at nine?", "Open the window.", "What a lovely day!"], "answer": 2, "explanation": "Imperatives give commands or instructions."}]}, {"slug": "child-language-acquisition", "title": "Child Language Acquisition", "summary": "The stages of early speech and the theories that try to explain them.", "primer": [{"heading": "Stages", "body": "Approximate ages vary between children. Babbling begins at around 6 months. The holophrastic (one-word) stage starts at about 12 months, where a single word can stand for a whole idea (\"juice!\"). The two-word stage follows at about 18 months (\"daddy car\"), then the telegraphic stage at about 24 months, where function words are dropped (\"me want biscuit\"), and then the post-telegraphic stage."}, {"heading": "Theories", "body": "Behaviourists such as Skinner argued children learn by imitation and reinforcement. Chomsky's nativist theory proposes an innate Language Acquisition Device, supported by the fact that children produce forms they have never heard. Piaget linked language to cognitive development. Interactionists such as Bruner (the Language Acquisition Support System) and Vygotsky (the zone of proximal development) stress the role of caregivers."}, {"heading": "Virtuous errors", "body": "Overgeneralisation errors such as \"I goed\" or \"two mouses\" are called virtuous errors: the child has learnt a rule (add -ed for past tense, -s for plural) and applies it too widely. Because adults do not say \"goed\", these errors are evidence against pure imitation. Berko's \"wug\" test showed children apply plural rules to invented words."}], "terms": [["Holophrase", "A single word used to express a whole idea."], ["Telegraphic speech", "Utterances with function words left out: \"me want biscuit\"."], ["Overgeneralisation", "Applying a grammatical rule too widely: \"I runned\"."], ["Child-directed speech", "The simplified, repetitive speech caregivers use with children."]], "questions": ["Why do errors like \"I goed\" challenge a purely behaviourist explanation?", "What role do caregivers play in Bruner's and Vygotsky's theories?", "Why should ages for each stage be treated as approximate?"], "cards": [["Approximate age of the two-word stage?", "Around 18 months."], ["Example of telegraphic speech?", "\"Me want biscuit\" (function words omitted)."], ["Chomsky's theory in one line?", "Nativism: children have an innate Language Acquisition Device."], ["Bruner's contribution?", "The Language Acquisition Support System: caregivers scaffold language learning."], ["What is a virtuous error?", "A mistake caused by applying a learnt rule too widely, e.g. \"I goed\"."], ["What did Berko's wug test show?", "Children apply grammatical rules (e.g. plural -s) to words they have never heard."]], "quiz": [{"prompt": "A child says \"daddy car\". This is typical of the", "options": ["babbling stage", "holophrastic stage", "two-word stage", "post-telegraphic stage"], "answer": 2, "explanation": "Two content words combined: the two-word stage, around 18 months."}, {"prompt": "\"I runned home\" is best explained as", "options": ["imitation of adults", "overgeneralisation of a past-tense rule", "a holophrase", "child-directed speech"], "answer": 1, "explanation": "The child applies the regular -ed rule to an irregular verb."}, {"prompt": "The Language Acquisition Support System is associated with", "options": ["Skinner", "Chomsky", "Bruner", "Piaget"], "answer": 2, "explanation": "Bruner proposed LASS to stress caregiver interaction."}, {"prompt": "Which evidence best supports nativism?", "options": ["Children copy adult accents", "Children produce forms they have never heard", "Parents praise correct speech", "Children learn words for objects they see"], "answer": 1, "explanation": "Novel forms suggest an internal rule system rather than imitation."}]}]}, {"slug": "mathematics", "name": "Mathematics", "symbol": "Ma", "blurb": "Pure mathematics: the calculus at the centre of AS and A Level.", "topics": [{"slug": "differentiation", "title": "Differentiation Techniques", "summary": "Standard derivatives, the chain, product and quotient rules, and stationary points.", "primer": [{"heading": "Standard derivatives", "body": "d/dx(xⁿ) = nxⁿ⁻¹. d/dx(eᵏˣ) = keᵏˣ. d/dx(ln x) = 1/x. With x in radians: d/dx(sin x) = cos x, d/dx(cos x) = −sin x, d/dx(tan x) = sec²x."}, {"heading": "Chain rule", "body": "For a function of a function, y = f(g(x)), dy/dx = f′(g(x)) × g′(x): differentiate the outside, keep the inside, multiply by the derivative of the inside. For y = (3x² + 2)⁵, dy/dx = 5(3x² + 2)⁴ × 6x = 30x(3x² + 2)⁴."}, {"heading": "Product and quotient rules", "body": "For y = uv, dy/dx = u(dv/dx) + v(du/dx). For y = u/v, dy/dx = (v(du/dx) − u(dv/dx)) / v². Identify u and v first and write down du/dx and dv/dx before substituting."}, {"heading": "Stationary points", "body": "Solve dy/dx = 0. Classify with the second derivative: d²y/dx² > 0 gives a minimum, d²y/dx² < 0 a maximum. If it equals 0, test the gradient on either side."}], "terms": [["Chain rule", "dy/dx = dy/du × du/dx for composite functions."], ["Product rule", "d(uv)/dx = u v′ + v u′."], ["Quotient rule", "d(u/v)/dx = (v u′ − u v′) / v²."], ["Stationary point", "A point where dy/dx = 0."]], "questions": ["How do you decide whether a function needs the chain, product or quotient rule?", "Why must x be in radians for d/dx(sin x) = cos x?", "When does the second derivative test fail to classify a stationary point?"], "cards": [["d/dx(eᵏˣ)?", "keᵏˣ"], ["d/dx(ln x)?", "1/x"], ["d/dx(tan x)?", "sec²x"], ["State the product rule.", "d(uv)/dx = u(dv/dx) + v(du/dx)"], ["State the quotient rule.", "d(u/v)/dx = (v(du/dx) − u(dv/dx)) / v²"], ["d²y/dx² > 0 at a stationary point means…", "A minimum."]], "quiz": [{"prompt": "Differentiate y = (3x² + 2)⁵.", "options": ["5(3x² + 2)⁴", "30x(3x² + 2)⁴", "6x(3x² + 2)⁴", "15x(3x² + 2)⁴"], "answer": 1, "explanation": "Chain rule: 5(3x² + 2)⁴ × 6x."}, {"prompt": "Differentiate y = x²eˣ.", "options": ["2xeˣ", "x²eˣ", "eˣ(x² + 2x)", "eˣ(2x + 1)"], "answer": 2, "explanation": "Product rule: 2x·eˣ + x²·eˣ."}, {"prompt": "Differentiate y = ln(5x).", "options": ["5/x", "1/(5x)", "1/x", "ln 5"], "answer": 2, "explanation": "ln(5x) = ln 5 + ln x, so dy/dx = 1/x."}, {"prompt": "y = x³ − 3x has a stationary point at x = 1. It is a", "options": ["maximum", "minimum", "point of inflection", "root"], "answer": 1, "explanation": "d²y/dx² = 6x = 6 > 0 at x = 1, so it is a minimum."}]}, {"slug": "integration", "title": "Integration", "summary": "Integration as the reverse of differentiation, standard integrals, definite integrals and area.", "primer": [{"heading": "Reverse of differentiation", "body": "∫xⁿ dx = xⁿ⁺¹/(n + 1) + c for n ≠ −1. ∫(1/x) dx = ln|x| + c. Always include the constant of integration in an indefinite integral; examiners deduct marks when it is missing."}, {"heading": "Standard integrals", "body": "∫eᵏˣ dx = (1/k)eᵏˣ + c. ∫cos kx dx = (1/k) sin kx + c. ∫sin kx dx = −(1/k) cos kx + c. Check by differentiating your answer."}, {"heading": "Definite integrals and area", "body": "A definite integral ∫ₐᵇ f(x) dx = F(b) − F(a) has no constant. It gives the area between the curve and the x-axis when the curve is above the axis. Where the curve is below the axis the integral is negative, so split the interval at the roots and add the absolute values."}], "terms": [["Indefinite integral", "A family of antiderivatives, written with + c."], ["Definite integral", "F(b) − F(a): a number, no constant."], ["Limits", "The values a and b in ∫ₐᵇ."], ["Antiderivative", "A function whose derivative is the integrand."]], "questions": ["Why does the rule for ∫xⁿ dx fail when n = −1?", "Why does an area below the x-axis give a negative integral?", "How can you check an integral is correct?"], "cards": [["∫xⁿ dx (n ≠ −1)?", "xⁿ⁺¹/(n + 1) + c"], ["∫(1/x) dx?", "ln|x| + c"], ["∫eᵏˣ dx?", "(1/k)eᵏˣ + c"], ["∫cos kx dx?", "(1/k) sin kx + c"], ["∫sin kx dx?", "−(1/k) cos kx + c"], ["Definite integral ∫ₐᵇ f(x) dx?", "F(b) − F(a), where F is an antiderivative of f."]], "quiz": [{"prompt": "Evaluate ∫₀² (3x² + 1) dx.", "options": ["8", "10", "12", "14"], "answer": 1, "explanation": "[x³ + x] from 0 to 2 = 8 + 2 = 10."}, {"prompt": "∫e²ˣ dx =", "options": ["2e²ˣ + c", "½e²ˣ + c", "e²ˣ + c", "e²ˣ/x + c"], "answer": 1, "explanation": "Divide by the coefficient of x: (1/2)e²ˣ + c."}, {"prompt": "The area between y = x² and the x-axis from x = 0 to x = 3 is", "options": ["3", "6", "9", "27"], "answer": 2, "explanation": "[x³/3] from 0 to 3 = 27/3 = 9."}, {"prompt": "∫cos 3x dx =", "options": ["3 sin 3x + c", "⅓ sin 3x + c", "−⅓ sin 3x + c", "sin 3x + c"], "answer": 1, "explanation": "Divide by 3: (1/3) sin 3x + c."}]}]}, {"slug": "physics", "name": "Physics", "symbol": "Ph", "blurb": "Mechanics and oscillations, with the calculations examiners expect.", "topics": [{"slug": "kinematics", "title": "Kinematics and Projectiles", "summary": "The equations of uniformly accelerated motion, free fall and projectile motion.", "primer": [{"heading": "The suvat equations", "body": "For constant acceleration: v = u + at; s = ut + ½at²; v² = u² + 2as; s = ½(u + v)t. List the three quantities you know and the one you want, then pick the equation that contains exactly those four."}, {"heading": "Free fall", "body": "Near the Earth's surface, ignoring air resistance, every object accelerates downwards at g = 9.81 m s⁻². Choose a positive direction and keep signs consistent: with up as positive, a = −9.81 m s⁻²."}, {"heading": "Projectiles", "body": "Treat horizontal and vertical motion separately; they share only the time of flight. Horizontally there is no force (ignoring air resistance), so velocity is constant. Vertically the motion is free fall. For a launch at angle θ with speed u, the components are u cos θ horizontally and u sin θ vertically."}], "terms": [["Displacement", "Distance in a specified direction (vector)."], ["Uniform acceleration", "Acceleration that is constant in size and direction."], ["Time of flight", "The total time a projectile is in the air."], ["Range", "The horizontal distance travelled by a projectile."]], "questions": ["Why is the horizontal velocity of a projectile constant?", "Which suvat equation would you use if time is not given or needed?", "At the top of its path, what are a projectile's vertical velocity and acceleration?"], "cards": [["suvat equation without s?", "v = u + at"], ["suvat equation without v?", "s = ut + ½at²"], ["suvat equation without t?", "v² = u² + 2as"], ["Value of g used at A Level?", "9.81 m s⁻²"], ["Horizontal acceleration of a projectile (no air resistance)?", "Zero: horizontal velocity is constant."], ["Vertical velocity at the top of a projectile's path?", "Zero (acceleration is still 9.81 m s⁻² downwards)."]], "quiz": [{"prompt": "A car accelerates from rest at 2.0 m s⁻² for 5.0 s. How far does it travel?", "options": ["10 m", "25 m", "50 m", "5 m"], "answer": 1, "explanation": "s = ut + ½at² = 0 + ½ × 2.0 × 25 = 25 m."}, {"prompt": "A ball is dropped from 20 m. Time to reach the ground (g = 9.81 m s⁻²):", "options": ["1.4 s", "2.0 s", "4.1 s", "2.9 s"], "answer": 1, "explanation": "t = √(2s/g) = √(40/9.81) ≈ 2.02 s."}, {"prompt": "A stone is thrown horizontally at 15 m s⁻¹ and lands 2.0 s later. Horizontal distance travelled:", "options": ["7.5 m", "15 m", "30 m", "19.6 m"], "answer": 2, "explanation": "Horizontal velocity is constant: 15 × 2.0 = 30 m."}, {"prompt": "A ball is thrown vertically upwards at 19.6 m s⁻¹. Its maximum height is about", "options": ["9.8 m", "19.6 m", "39.2 m", "2.0 m"], "answer": 1, "explanation": "v² = u² − 2gs with v = 0: s = 19.6² / (2 × 9.81) ≈ 19.6 m."}]}, {"slug": "simple-harmonic-motion", "title": "Simple Harmonic Motion", "summary": "The defining equation a = −ω²x, its solutions, energy in SHM, and springs and pendulums.", "primer": [{"heading": "Definition", "body": "Motion is simple harmonic when the acceleration is proportional to the displacement from a fixed point and always directed towards that point: a = −ω²x, where ω = 2πf = 2π/T is the angular frequency."}, {"heading": "Solutions and maximum values", "body": "If timing starts at maximum displacement, x = A cos ωt. Velocity v = ±ω√(A² − x²), so the maximum speed is ωA, at the equilibrium position. The maximum acceleration is ω²A, at the extremes of the motion."}, {"heading": "Springs, pendulums and energy", "body": "A mass on a spring has T = 2π√(m/k). A simple pendulum, for small angles, has T = 2π√(l/g), independent of the mass and of the amplitude. In undamped SHM total energy is constant: kinetic energy is greatest at equilibrium and potential energy greatest at maximum displacement."}], "terms": [["Angular frequency", "ω = 2πf, in rad s⁻¹."], ["Amplitude", "Maximum displacement from equilibrium."], ["Isochronous", "Having a period independent of amplitude."], ["Damping", "Loss of energy that reduces the amplitude over time."]], "questions": ["Why is the speed greatest at equilibrium but the acceleration greatest at the extremes?", "Why does a pendulum's period not depend on its mass?", "What happens to the energy when an oscillation is damped?"], "cards": [["Defining equation of SHM?", "a = −ω²x"], ["Relationship between ω, f and T?", "ω = 2πf = 2π/T"], ["Maximum speed in SHM?", "v_max = ωA, at equilibrium."], ["Maximum acceleration in SHM?", "a_max = ω²A, at maximum displacement."], ["Period of a mass on a spring?", "T = 2π√(m/k)"], ["Period of a simple pendulum?", "T = 2π√(l/g), for small angles."]], "quiz": [{"prompt": "An object oscillates in SHM at 2.0 Hz with amplitude 0.050 m. Its maximum speed is", "options": ["0.10 m s⁻¹", "0.31 m s⁻¹", "0.63 m s⁻¹", "7.9 m s⁻¹"], "answer": 2, "explanation": "v_max = ωA = 2π × 2.0 × 0.050 ≈ 0.63 m s⁻¹."}, {"prompt": "The length of a simple pendulum is quadrupled. Its period", "options": ["halves", "stays the same", "doubles", "quadruples"], "answer": 2, "explanation": "T ∝ √l, and √4 = 2."}, {"prompt": "In SHM, acceleration is greatest when the object is", "options": ["at equilibrium", "at maximum displacement", "moving fastest", "halfway to the extreme"], "answer": 1, "explanation": "a = −ω²x is largest in size where |x| is largest."}, {"prompt": "A 0.50 kg mass hangs on a spring with k = 200 N m⁻¹. The period is", "options": ["0.031 s", "0.31 s", "3.1 s", "0.050 s"], "answer": 1, "explanation": "T = 2π√(0.50/200) = 2π × 0.050 ≈ 0.31 s."}]}]}, {"slug": "chemistry", "name": "Chemistry", "symbol": "Ch", "blurb": "Physical chemistry: energy changes and how fast reactions go.", "topics": [{"slug": "energetics", "title": "Chemical Energetics", "summary": "Enthalpy changes, calorimetry, Hess's law and bond enthalpies.", "primer": [{"heading": "Enthalpy change", "body": "ΔH is the heat energy change at constant pressure. Exothermic reactions have negative ΔH; endothermic reactions have positive ΔH. Standard conditions are 100 kPa and a stated temperature, usually 298 K. Standard enthalpy of formation is for forming 1 mol of a compound from its elements in their standard states; standard enthalpy of combustion is for burning 1 mol completely in oxygen."}, {"heading": "Calorimetry", "body": "Heat transferred q = mcΔT, using the mass of the solution (1 cm³ ≈ 1 g) and c = 4.18 J g⁻¹ K⁻¹. Then ΔH = −q / n, where n is the moles of the limiting reactant. The sign is negative if the temperature rose."}, {"heading": "Hess's law and bond enthalpies", "body": "Hess's law: the enthalpy change of a reaction is independent of the route taken. Build a cycle through formation or combustion data. With bond enthalpies, ΔH = Σ(bonds broken) − Σ(bonds formed). Bond enthalpies are averages over many compounds, so results differ slightly from experimental data."}], "terms": [["Exothermic", "Releases heat to the surroundings; ΔH negative."], ["Standard enthalpy of formation", "ΔH when 1 mol of compound forms from its elements in standard states."], ["Hess's law", "ΔH is independent of the route taken."], ["Mean bond enthalpy", "Average energy to break 1 mol of a bond type in gaseous molecules."]], "questions": ["Why do calorimetry experiments usually give a less negative ΔH than data books?", "Why can enthalpies of formation not always be measured directly?", "Why do bond-enthalpy calculations give only approximate answers?"], "cards": [["Sign of ΔH for an exothermic reaction?", "Negative."], ["Standard conditions?", "100 kPa and a stated temperature, usually 298 K."], ["Formula for heat transferred in calorimetry?", "q = mcΔT"], ["State Hess's law.", "The enthalpy change for a reaction is independent of the route, provided start and end conditions are the same."], ["ΔH from bond enthalpies?", "Σ(bonds broken) − Σ(bonds formed)"], ["Why are bond enthalpies approximate?", "They are mean values averaged over many different compounds."]], "quiz": [{"prompt": "C + O₂ → CO₂, ΔH = −394 kJ mol⁻¹; CO + ½O₂ → CO₂, ΔH = −283 kJ mol⁻¹. ΔH for C + ½O₂ → CO is", "options": ["−677 kJ mol⁻¹", "−111 kJ mol⁻¹", "+111 kJ mol⁻¹", "−283 kJ mol⁻¹"], "answer": 1, "explanation": "Hess: −394 − (−283) = −111 kJ mol⁻¹."}, {"prompt": "Using H–H 436, Cl–Cl 243 and H–Cl 432 kJ mol⁻¹, ΔH for H₂ + Cl₂ → 2HCl is", "options": ["−185 kJ mol⁻¹", "+185 kJ mol⁻¹", "−247 kJ mol⁻¹", "+247 kJ mol⁻¹"], "answer": 0, "explanation": "(436 + 243) − 2 × 432 = 679 − 864 = −185 kJ mol⁻¹."}, {"prompt": "0.025 mol of acid reacts in 50 cm³ of solution and the temperature rises by 6.0 K (c = 4.18 J g⁻¹ K⁻¹). ΔH is about", "options": ["−1.25 kJ mol⁻¹", "−50 kJ mol⁻¹", "+50 kJ mol⁻¹", "−12.5 kJ mol⁻¹"], "answer": 1, "explanation": "q = 50 × 4.18 × 6.0 = 1254 J; ΔH = −1254 / 0.025 ≈ −50 kJ mol⁻¹."}, {"prompt": "A temperature fall during a reaction shows that the reaction is", "options": ["exothermic", "endothermic", "at equilibrium", "catalysed"], "answer": 1, "explanation": "Heat is taken in from the surroundings, so ΔH is positive."}]}, {"slug": "kinetics", "title": "Reaction Kinetics", "summary": "Rate equations, orders of reaction, half-life and the rate-determining step.", "primer": [{"heading": "Rate equations", "body": "For A + B → products, rate = k[A]ᵐ[B]ⁿ, where m and n are the orders with respect to each reactant and m + n is the overall order. Orders are found by experiment, not from the balanced equation. If doubling [A] doubles the rate, the order in A is 1; if it quadruples the rate, the order is 2; if the rate is unchanged, the order is 0."}, {"heading": "Units and half-life", "body": "The units of k depend on the overall order: s⁻¹ for first order, mol⁻¹ dm³ s⁻¹ for second order, mol⁻² dm⁶ s⁻¹ for third order. A first-order reaction has a constant half-life, independent of concentration, and k = ln 2 / t½."}, {"heading": "Mechanisms and temperature", "body": "The rate-determining step is the slowest step in a mechanism. Species in the rate equation appear in or before that step; a reactant with order zero is not involved until after it. Raising temperature increases k because a larger fraction of collisions have energy at least equal to the activation energy, as shown by the Arrhenius equation k = Ae^(−Ea/RT)."}], "terms": [["Order of reaction", "The power to which a concentration is raised in the rate equation."], ["Rate constant", "k in the rate equation; changes with temperature."], ["Half-life", "Time for a reactant's concentration to halve."], ["Rate-determining step", "The slowest step in a reaction mechanism."]], "questions": ["Why can orders not be read from the stoichiometric equation?", "How can a rate equation tell you about the mechanism?", "Why does a small temperature rise cause a large increase in rate?"], "cards": [["General rate equation?", "rate = k[A]ᵐ[B]ⁿ"], ["Doubling [A] quadruples the rate. Order in A?", "Second order."], ["Units of k for a first-order reaction?", "s⁻¹"], ["Units of k for a second-order reaction?", "mol⁻¹ dm³ s⁻¹"], ["Half-life of a first-order reaction?", "Constant, independent of concentration; t½ = ln 2 / k."], ["Arrhenius equation?", "k = Ae^(−Ea/RT)"]], "quiz": [{"prompt": "rate = k[A][B]². The units of k are", "options": ["s⁻¹", "mol⁻¹ dm³ s⁻¹", "mol⁻² dm⁶ s⁻¹", "mol dm⁻³ s⁻¹"], "answer": 2, "explanation": "Third order overall: k = rate / conc³ → mol⁻² dm⁶ s⁻¹."}, {"prompt": "A first-order reaction has a half-life of 20 s. What fraction of reactant remains after 60 s?", "options": ["1/3", "1/4", "1/8", "1/6"], "answer": 2, "explanation": "Three half-lives: (1/2)³ = 1/8."}, {"prompt": "For NO₂ + CO → NO + CO₂, rate = k[NO₂]². This suggests that", "options": ["CO is a catalyst", "CO is not involved in the rate-determining step", "the reaction is first order overall", "the equation is unbalanced"], "answer": 1, "explanation": "Zero order in CO means it reacts after the slow step."}, {"prompt": "Doubling [X] leaves the rate unchanged. The order with respect to X is", "options": ["0", "1", "2", "−1"], "answer": 0, "explanation": "Rate independent of [X] means zero order."}]}]}, {"slug": "biology", "name": "Biology", "symbol": "Bi", "blurb": "Biological molecules, enzymes and the flow of genetic information.", "topics": [{"slug": "enzymes", "title": "Enzymes", "summary": "How enzymes work, the factors affecting their rate, and inhibition.", "primer": [{"heading": "How enzymes work", "body": "Enzymes are globular proteins that act as biological catalysts by lowering the activation energy of a reaction. The substrate binds to the active site, which has a specific tertiary structure, to form an enzyme–substrate complex. In the induced-fit model the active site changes shape slightly as the substrate binds, putting strain on bonds."}, {"heading": "Factors affecting rate", "body": "Rising temperature increases kinetic energy and collisions until the optimum; above it, hydrogen and ionic bonds in the enzyme break, the active site changes shape and the enzyme is denatured. pH away from the optimum alters charges in the active site. Increasing substrate concentration raises the rate until all active sites are occupied and the rate reaches Vmax."}, {"heading": "Inhibition", "body": "A competitive inhibitor has a shape similar to the substrate and binds to the active site; its effect can be overcome by raising substrate concentration, so Vmax is unchanged but more substrate is needed to reach it. A non-competitive inhibitor binds elsewhere (an allosteric site), changing the shape of the active site; adding more substrate does not overcome it, so Vmax falls."}], "terms": [["Active site", "The region of an enzyme where the substrate binds."], ["Induced fit", "Active site changes shape slightly as the substrate binds."], ["Denaturation", "Permanent change in tertiary structure that destroys the active site."], ["Vmax", "Maximum rate, when all active sites are occupied."]], "questions": ["Why does rate fall sharply above the optimum temperature?", "How could you tell from a graph whether an inhibitor is competitive?", "Why is enzyme specificity linked to tertiary structure?"], "cards": [["How do enzymes speed up reactions?", "They lower the activation energy."], ["Describe the induced-fit model.", "The active site changes shape slightly as the substrate binds, forming a closer fit and straining bonds."], ["What happens above the optimum temperature?", "Bonds holding the tertiary structure break, the active site changes shape and the enzyme denatures."], ["Competitive inhibitor: effect on Vmax?", "Vmax unchanged; overcome by high substrate concentration."], ["Non-competitive inhibitor: where does it bind?", "At an allosteric site, away from the active site."], ["Why does rate level off at high substrate concentration?", "All active sites are occupied; enzyme concentration is limiting."]], "quiz": [{"prompt": "Adding more substrate overcomes the effect of an inhibitor. The inhibitor is most likely", "options": ["competitive", "non-competitive", "a denaturing agent", "a coenzyme"], "answer": 0, "explanation": "Substrate out-competes a competitive inhibitor for the active site."}, {"prompt": "Why does an enzyme stop working at 70 °C?", "options": ["Molecules move too slowly", "The active site changes shape as bonds break", "The substrate is denatured", "pH falls"], "answer": 1, "explanation": "Heat breaks hydrogen and ionic bonds, altering the tertiary structure."}, {"prompt": "Increasing substrate concentration no longer increases rate because", "options": ["the enzyme is denatured", "all active sites are occupied", "the substrate is inhibiting itself", "activation energy has risen"], "answer": 1, "explanation": "At saturation the rate is limited by enzyme concentration."}, {"prompt": "A non-competitive inhibitor", "options": ["binds the active site", "lowers Vmax", "has the same shape as the substrate", "is overcome by more substrate"], "answer": 1, "explanation": "It alters the active site from elsewhere, so some enzyme is effectively removed."}]}, {"slug": "dna-and-protein-synthesis", "title": "DNA Replication and Protein Synthesis", "summary": "Semi-conservative replication, transcription and translation.", "primer": [{"heading": "Semi-conservative replication", "body": "DNA helicase unwinds the double helix and breaks the hydrogen bonds between bases. Each strand acts as a template; free nucleotides pair with complementary bases (A–T, C–G) and DNA polymerase joins them with phosphodiester bonds, working in the 5′ to 3′ direction. The lagging strand is made in short Okazaki fragments joined by DNA ligase. Each new molecule has one original and one new strand, as Meselson and Stahl showed using ¹⁵N and ¹⁴N."}, {"heading": "Transcription", "body": "In the nucleus, RNA polymerase builds an mRNA copy of a gene using one DNA strand as the template, with uracil in place of thymine. In eukaryotes the pre-mRNA is spliced to remove introns before the mRNA leaves the nucleus through a nuclear pore."}, {"heading": "Translation", "body": "At a ribosome, each mRNA codon (a triplet of bases) is matched by the complementary anticodon of a tRNA carrying a specific amino acid. Peptide bonds form between adjacent amino acids. The genetic code is degenerate (most amino acids have more than one codon), non-overlapping and universal."}], "terms": [["Semi-conservative", "Each new DNA molecule keeps one original strand."], ["Okazaki fragments", "Short DNA sections made on the lagging strand."], ["Codon", "A triplet of mRNA bases coding for one amino acid."], ["Anticodon", "A tRNA triplet complementary to an mRNA codon."]], "questions": ["How did Meselson and Stahl rule out conservative replication?", "Why is a lagging strand needed during replication?", "Why might a single base substitution not change the protein?"], "cards": [["Role of DNA helicase?", "Unwinds DNA and breaks hydrogen bonds between bases."], ["Role of DNA polymerase?", "Joins nucleotides with phosphodiester bonds, 5′ to 3′."], ["Role of DNA ligase in replication?", "Joins Okazaki fragments on the lagging strand."], ["Where does transcription happen in eukaryotes?", "In the nucleus, using RNA polymerase."], ["What does \"degenerate\" mean for the genetic code?", "Most amino acids are coded for by more than one codon."], ["tRNA anticodon for the codon AUG?", "UAC"]], "quiz": [{"prompt": "Bacteria grown in ¹⁵N are moved to ¹⁴N for one generation. Their DNA is", "options": ["all heavy", "all light", "all intermediate (hybrid)", "half heavy, half light"], "answer": 2, "explanation": "Semi-conservative replication gives one ¹⁵N and one ¹⁴N strand in every molecule."}, {"prompt": "Which enzyme joins Okazaki fragments?", "options": ["DNA helicase", "RNA polymerase", "DNA ligase", "DNA polymerase"], "answer": 2, "explanation": "DNA ligase seals the gaps between fragments."}, {"prompt": "The anticodon complementary to the codon GCA is", "options": ["CGT", "CGU", "GCA", "UGC"], "answer": 1, "explanation": "RNA uses U instead of T: G–C, C–G, A–U."}, {"prompt": "How many bases in mRNA code for a polypeptide of 100 amino acids (ignoring the stop codon)?", "options": ["100", "200", "300", "400"], "answer": 2, "explanation": "Each amino acid is coded by a triplet: 3 × 100 = 300."}]}]}, {"slug": "geography", "name": "Geography", "symbol": "Gg", "blurb": "Physical systems: drainage basins and coastal landscapes.", "topics": [{"slug": "hydrology", "title": "Hydrology: Drainage Basins and Storm Hydrographs", "summary": "The drainage basin as an open system, the water balance, and what controls a storm hydrograph.", "primer": [{"heading": "The drainage basin system", "body": "A drainage basin is an open system. Inputs: precipitation. Stores: interception, surface storage, soil water, groundwater and the channel. Flows: throughfall, stemflow, infiltration, overland flow, throughflow, percolation and groundwater flow. Outputs: evapotranspiration and channel discharge. The water balance is P = Q + E ± ΔS."}, {"heading": "Reading a storm hydrograph", "body": "A storm hydrograph plots discharge (m³ s⁻¹) against time after a rainfall event. Lag time is the time between peak rainfall and peak discharge. The rising limb shows discharge increasing; the falling (recession) limb shows it returning towards baseflow, the slow contribution of groundwater."}, {"heading": "What makes a \"flashy\" hydrograph", "body": "A short lag time and high peak result from impermeable rock or saturated soil, steep slopes, a circular basin with high drainage density, little vegetation and urbanisation, which adds impermeable surfaces and drains. Permeable rock, forest cover and an elongated basin lengthen the lag time and lower the peak."}], "terms": [["Lag time", "Time between peak rainfall and peak discharge."], ["Baseflow", "River flow supplied by groundwater."], ["Throughflow", "Water moving laterally through the soil."], ["Drainage density", "Total stream length divided by basin area."]], "questions": ["Why does urbanisation shorten lag time?", "How would the same storm produce different hydrographs in winter and summer?", "Why is a drainage basin an open system while the global water cycle is closed?"], "cards": [["Water balance equation?", "P = Q + E ± ΔS"], ["Define lag time.", "The time between peak rainfall and peak discharge."], ["What is baseflow?", "The part of river discharge supplied by groundwater."], ["Four factors giving a short lag time?", "Impermeable rock, steep slopes, saturated soil, urbanisation (also high drainage density, little vegetation)."], ["Infiltration vs percolation?", "Infiltration: water entering the soil. Percolation: water moving down from soil into rock."], ["Is a drainage basin open or closed?", "Open: it has inputs and outputs of water."]], "quiz": [{"prompt": "Which change would most likely shorten lag time?", "options": ["Afforestation", "Building a new housing estate", "A drought before the storm", "Permeable bedrock"], "answer": 1, "explanation": "Impermeable surfaces and drains move water to the channel quickly."}, {"prompt": "Baseflow is supplied mainly by", "options": ["overland flow", "groundwater flow", "interception", "stemflow"], "answer": 1, "explanation": "Slow groundwater flow sustains discharge between storms."}, {"prompt": "In P = Q + E ± ΔS, Q stands for", "options": ["precipitation", "discharge (runoff)", "evapotranspiration", "storage"], "answer": 1, "explanation": "Q is channel discharge."}, {"prompt": "A basin with high drainage density will typically have", "options": ["a long lag time", "a low peak discharge", "a short lag time and high peak", "no baseflow"], "answer": 2, "explanation": "Many channels collect water quickly, giving a flashy response."}]}, {"slug": "coastal-systems", "title": "Coastal Systems and Landscapes", "summary": "Waves, sediment movement, erosional and depositional landforms, and coastal management.", "primer": [{"heading": "Waves", "body": "Constructive waves are low, with a long wavelength and low frequency (about 6–8 per minute); the swash is stronger than the backwash, so they build beaches. Destructive waves are high and steep with a higher frequency (about 10–14 per minute); the backwash is stronger, so they remove material."}, {"heading": "Erosional landforms", "body": "Where rock types alternate along a discordant coastline, softer rock erodes into bays and harder rock is left as headlands. Wave refraction concentrates energy on headlands, where a crack can enlarge into a cave, then an arch, a stack and finally a stump. Cliff retreat leaves a wave-cut platform at its base."}, {"heading": "Deposition and management", "body": "Longshore drift moves sediment along the coast in the direction of the prevailing wind: swash moves up the beach at an angle, backwash returns straight down. Where the coastline changes direction, deposition can build a spit. Shoreline Management Plans divide coasts into sediment cells and choose a policy: hold the line, advance the line, managed realignment or no active intervention."}], "terms": [["Swash", "Water moving up the beach after a wave breaks."], ["Longshore drift", "Movement of sediment along the coast by waves."], ["Sediment cell", "A stretch of coast largely self-contained for sediment movement."], ["Managed realignment", "Allowing the shoreline to move inland in a controlled way."]], "questions": ["Why do headlands erode even though they are made of harder rock?", "How can a groyne protect one beach while causing erosion further along?", "When might managed realignment be a better choice than holding the line?"], "cards": [["Constructive vs destructive waves?", "Constructive: low, long wavelength, strong swash, build beaches. Destructive: high, frequent, strong backwash, remove material."], ["Sequence of headland erosion?", "Crack → cave → arch → stack → stump."], ["What forms at the base of a retreating cliff?", "A wave-cut platform."], ["Direction of longshore drift?", "With the prevailing wind: swash at an angle, backwash straight down the beach."], ["Four Shoreline Management Plan policies?", "Hold the line, advance the line, managed realignment, no active intervention."], ["How does a spit form?", "Longshore drift continues to deposit sediment where the coastline changes direction."]], "quiz": [{"prompt": "Waves with a strong swash and weak backwash are", "options": ["destructive", "constructive", "tidal", "refracted"], "answer": 1, "explanation": "Constructive waves add material to the beach."}, {"prompt": "Which landform comes immediately after an arch collapses?", "options": ["Cave", "Stump", "Stack", "Spit"], "answer": 2, "explanation": "The arch roof falls, leaving an isolated stack."}, {"prompt": "Allowing the sea to flood low-value farmland to create salt marsh is", "options": ["hold the line", "managed realignment", "advance the line", "beach nourishment"], "answer": 1, "explanation": "The shoreline is moved inland in a controlled way."}, {"prompt": "Longshore drift moves sediment", "options": ["offshore only", "in the direction of the prevailing wind", "against the prevailing wind", "only during storms"], "answer": 1, "explanation": "Swash follows the wind direction, moving sediment along the coast."}]}]}];
+const SRS = (() => {
+
+// A compact SM-2 style spaced-repetition scheduler.
+// Grades: 0 = Again, 1 = Hard, 2 = Good, 3 = Easy.
+
+const MIN = 60 * 1000;
+const DAY = 24 * 60 * MIN;
+const MIN_EASE = 1.3;
+
+function schedule(state, grade, now = Date.now()) {
+  let { ease = 2.5, interval_d = 0, reps = 0 } = state || {};
+  let dueIn; // milliseconds
+
+  if (grade === 0) {
+    reps = 0;
+    interval_d = 0;
+    ease = Math.max(MIN_EASE, ease - 0.2);
+    dueIn = 10 * MIN; // see it again in this session
+  } else if (grade === 1) {
+    interval_d = reps === 0 ? 0.5 : Math.max(1, interval_d * 1.2);
+    ease = Math.max(MIN_EASE, ease - 0.15);
+    reps += 1;
+    dueIn = interval_d * DAY;
+  } else if (grade === 2) {
+    interval_d = reps === 0 ? 1 : reps === 1 ? 3 : Math.round(interval_d * ease);
+    reps += 1;
+    dueIn = interval_d * DAY;
+  } else {
+    interval_d = reps === 0 ? 4 : Math.round(Math.max(interval_d, 1) * ease * 1.3);
+    ease += 0.15;
+    reps += 1;
+    dueIn = interval_d * DAY;
+  }
+  return { ease: +ease.toFixed(2), interval_d, reps, due_at: now + Math.round(dueIn) };
+}
+
+// Human-readable label of when the card would come back for each grade.
+function preview(state, now = Date.now()) {
+  return [0, 1, 2, 3].map((g) => label(schedule(state, g, now).due_at - now));
+}
+
+function label(ms) {
+  if (ms < 60 * MIN) return Math.max(1, Math.round(ms / MIN)) + 'm';
+  if (ms < DAY) return Math.round(ms / (60 * MIN)) + 'h';
+  const d = ms / DAY;
+  if (d < 30) return Math.round(d) + 'd';
+  if (d < 365) return Math.round(d / 30) + 'mo';
+  return (d / 365).toFixed(1) + 'y';
+}
+
+
+
+return { schedule, preview };
+})();
+/* In-browser stand-in for server/server.js, used by the hosted demo.
+   Same endpoints and JSON shapes, but data lives in this browser only
+   (localStorage when available, memory otherwise). */
+
+
+const MockServer = (() => {
+  const KEY = 'marginalia-accounts-v2'; // storage name kept so existing accounts survive the rename
+  const DAY = 24 * 60 * 60 * 1000;
+  const MASTERED_DAYS = 21;
+
+  /* ---- catalogue: flatten SUBJECTS exactly the way server/db.js seeds it */
+  const subjects = [], topics = [], cards = [], questions = [];
+  SUBJECTS.forEach((s, si) => {
+    const sid = si + 1;
+    subjects.push({ id: sid, slug: s.slug, name: s.name, symbol: s.symbol, blurb: s.blurb, sort: si });
+    s.topics.forEach((t, ti) => {
+      const tid = topics.length + 1;
+      topics.push({ id: tid, subject_id: sid, title: t.title, summary: t.summary, primer: t.primer, terms: t.terms, questions: t.questions, sort: ti });
+      t.cards.forEach(([front, back]) => cards.push({ id: cards.length + 1, topic_id: tid, front, back }));
+      t.quiz.forEach((q) => questions.push({ id: questions.length + 1, topic_id: tid, ...q }));
+    });
+  });
+  const subjectOf = (topicId) => subjects.find((s) => s.id === topics.find((t) => t.id === topicId).subject_id);
+  const topicOfCard = (cardId) => topics.find((t) => t.id === cards.find((c) => c.id === cardId).topic_id);
+
+  /* ---- persistent learner state */
+  const blank = () => ({ users: [], session: null, previewed: {}, deck: {}, log: [], attempts: [], wallets: {}, points: [], runs: {} });
+  let db = blank();
+  try { const raw = localStorage.getItem(KEY); if (raw) db = Object.assign(blank(), JSON.parse(raw)); } catch (e) { /* memory only */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { /* memory only */ } };
+
+  class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
+  const me = () => db.users.find((u) => u.id === db.session) || null;
+  const requireUser = () => { const u = me(); if (!u) throw new HttpError(401, 'Please sign in first.'); return u; };
+  const k = (uid, id) => uid + ':' + id;
+
+  async function hash(pw, salt) {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ':' + pw));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) { return 'plain:' + salt + ':' + pw; }
+  }
+
+  const deckFor = (uid) => Object.entries(db.deck).filter(([key]) => key.startsWith(uid + ':'))
+    .map(([key, st]) => ({ card_id: Number(key.split(':')[1]), ...st }));
+
+  function subjectStats(uid) {
+    const now = Date.now();
+    const deck = deckFor(uid);
+    return subjects.map((s) => {
+      const tIds = topics.filter((t) => t.subject_id === s.id).map((t) => t.id);
+      const cIds = new Set(cards.filter((c) => tIds.includes(c.topic_id)).map((c) => c.id));
+      const mine = deck.filter((d) => cIds.has(d.card_id));
+      return { slug: s.slug, name: s.name, symbol: s.symbol, blurb: s.blurb, topics: tIds.length, cards: cIds.size,
+        in_review: mine.length, mastered: mine.filter((d) => d.interval_d >= MASTERED_DAYS).length,
+        due: mine.filter((d) => d.due_at <= now).length };
+    });
+  }
+
+  function streak(uid) {
+    const fmt = (d) => d.toLocaleDateString('en-CA');
+    const days = new Set(db.log.filter((l) => l.user_id === uid).map((l) => fmt(new Date(l.at))));
+    const c = new Date();
+    if (!days.has(fmt(c))) c.setDate(c.getDate() - 1);
+    let n = 0;
+    while (days.has(fmt(c))) { n++; c.setDate(c.getDate() - 1); }
+    return n;
+  }
+
+  /* ---- reward points and the game (mirrors app.py) */
+  const GAME_COST = 5, GAME_LEVELS = 5, GRAND_PRIZE = 30, MIN_LEVEL_MS = 10000, RUN_TTL_MS = 60 * 60 * 1000;
+  const todayStart = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const BADGE_TIERS = [
+    { tier: 1, name: 'Rubber Stamp', cost: 0, lives: 3 },
+    { tier: 2, name: 'Riso Sticker', cost: 20, lives: 3 },
+    { tier: 3, name: 'Stitched Patch', cost: 40, lives: 4 },
+    { tier: 4, name: 'Foil Seal', cost: 70, lives: 4 },
+    { tier: 5, name: 'Holo Card', cost: 120, lives: 5 },
+  ];
+  const wallet = (uid) => {
+    const w = (db.wallets[uid] = db.wallets[uid] || { points: 0, game_level: 1, champion_at: null, badge_tier: 0 });
+    if (w.badge_tier == null) w.badge_tier = w.champion_at != null ? 1 : 0; // wallets saved before badge tiers existed
+    return w;
+  };
+  const badgeInfo = (tier) => {
+    const cur = tier ? BADGE_TIERS[tier - 1] : null;
+    const nxt = tier > 0 && tier < BADGE_TIERS.length ? BADGE_TIERS[tier] : null;
+    return { badge: { tier, name: cur ? cur.name : null, max: BADGE_TIERS.length,
+      next: nxt ? { tier: nxt.tier, name: nxt.name, cost: nxt.cost, lives: nxt.lives } : null }, lives: cur ? cur.lives : 3 };
+  };
+  const addPoints = (uid, delta, reason) => { wallet(uid).points += delta; db.points.push({ user_id: uid, delta, reason, at: Date.now() }); };
+  const earnedToday = (uid) => db.points.filter((p) => p.user_id === uid && p.delta > 0 && (p.reason === 'review' || p.reason === 'quiz') && p.at >= todayStart())
+    .reduce((a, p) => a + p.delta, 0);
+  const gameState = (uid) => { const w = wallet(uid); return { points: w.points, level: w.game_level, levels: GAME_LEVELS, cost: GAME_COST,
+    champion: w.champion_at != null, grandPrize: GRAND_PRIZE, earnedToday: earnedToday(uid), ...badgeInfo(w.badge_tier) }; };
+  const activeRun = (uid, id) => {
+    const r = db.runs[String(id)];
+    if (!r || r.user_id !== uid || r.ended_at != null || Date.now() - r.started_at > RUN_TTL_MS) throw new HttpError(409, 'That game has ended. Start a new one.');
+    return r;
+  };
+
+  const routes = [];
+  const route = (method, pattern, fn) => {
+    const keys = [];
+    const re = new RegExp('^' + pattern.replace(/:(\w+)/g, (_, key) => { keys.push(key); return '([^/?]+)'; }) + '(?:\\?.*)?$');
+    routes.push({ method, re, keys, fn });
+  };
+
+  route('POST', '/api/auth/register', async (b) => {
+    const name = String(b.name || '').trim().slice(0, 60);
+    const email = String(b.email || '').trim().toLowerCase();
+    if (!name) throw new HttpError(400, 'Please tell us your name.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'That email address does not look right.');
+    if (String(b.password || '').length < 8) throw new HttpError(400, 'Use a password of at least 8 characters.');
+    if (db.users.some((u) => u.email === email)) throw new HttpError(409, 'An account with that email already exists.');
+    const salt = Math.random().toString(36).slice(2);
+    const user = { id: (db.users.reduce((m, u) => Math.max(m, u.id), 0) + 1), name, email, salt, pass: await hash(String(b.password), salt) };
+    db.users.push(user); db.session = user.id; save();
+    return { user: { id: user.id, name, email } };
+  });
+
+  route('POST', '/api/auth/login', async (b) => {
+    const u = db.users.find((x) => x.email === String(b.email || '').trim().toLowerCase());
+    if (!u || (await hash(String(b.password || ''), u.salt)) !== u.pass) throw new HttpError(401, 'Email or password is incorrect.');
+    db.session = u.id; save();
+    return { user: { id: u.id, name: u.name, email: u.email } };
+  });
+
+  route('POST', '/api/auth/logout', async () => { db.session = null; save(); return { ok: true }; });
+  route('GET', '/api/me', async () => { const u = me(); return { user: u ? { id: u.id, name: u.name, email: u.email } : null }; });
+
+  route('GET', '/api/dashboard', async () => {
+    const u = requireUser();
+    const subj = subjectStats(u.id);
+    const today = new Date().toLocaleDateString('en-CA');
+    const recent = db.attempts.filter((a) => a.user_id === u.id).slice(-5).reverse().map((a) => {
+      const t = topics.find((x) => x.id === a.topic_id);
+      return { score: a.score, total: a.total, created_at: a.at, topic_id: t.id, title: t.title, subject: subjectOf(t.id).name };
+    });
+    const next = topics.filter((t) => !db.previewed[k(u.id, t.id)])
+      .sort((a, b) => a.subject_id - b.subject_id || a.sort - b.sort).slice(0, 3)
+      .map((t) => ({ id: t.id, title: t.title, subject: subjectOf(t.id).name, subject_slug: subjectOf(t.id).slug }));
+    return { user: { name: u.name }, due: subj.reduce((a, s) => a + s.due, 0),
+      reviewedToday: db.log.filter((l) => l.user_id === u.id && new Date(l.at).toLocaleDateString('en-CA') === today).length,
+      streak: streak(u.id), subjects: subj, recent, next,
+      points: wallet(u.id).points, champion: wallet(u.id).champion_at != null, badge: badgeInfo(wallet(u.id).badge_tier).badge, earnedToday: earnedToday(u.id) };
+  });
+
+  route('GET', '/api/subjects/:slug', async (_, p) => {
+    const u = requireUser();
+    const s = subjects.find((x) => x.slug === p.slug);
+    if (!s) throw new HttpError(404, 'Subject not found.');
+    const now = Date.now();
+    const deck = deckFor(u.id);
+    return {
+      subject: { slug: s.slug, name: s.name, symbol: s.symbol, blurb: s.blurb },
+      topics: topics.filter((t) => t.subject_id === s.id).map((t) => {
+        const cIds = new Set(cards.filter((c) => c.topic_id === t.id).map((c) => c.id));
+        const mine = deck.filter((d) => cIds.has(d.card_id));
+        const att = db.attempts.filter((a) => a.user_id === u.id && a.topic_id === t.id);
+        return { id: t.id, title: t.title, summary: t.summary, cards: cIds.size,
+          questions: questions.filter((q) => q.topic_id === t.id).length,
+          previewed_at: db.previewed[k(u.id, t.id)] || null,
+          due: mine.filter((d) => d.due_at <= now).length,
+          mastered: mine.filter((d) => d.interval_d >= MASTERED_DAYS).length,
+          best: att.length ? Math.max(...att.map((a) => a.score / a.total)) : null };
+      }),
+    };
+  });
+
+  const getTopic = (id) => { const t = topics.find((x) => x.id === Number(id)); if (!t) throw new HttpError(404, 'Topic not found.'); return t; };
+
+  route('GET', '/api/topics/:id/quiz', async (_, p) => {
+    requireUser();
+    const t = getTopic(p.id);
+    return { topic: { id: t.id, title: t.title, subject: subjectOf(t.id).name },
+      questions: questions.filter((q) => q.topic_id === t.id).map((q) => ({ id: q.id, prompt: q.prompt, options: q.options })) };
+  });
+
+  route('POST', '/api/topics/:id/quiz', async (b, p) => {
+    const u = requireUser();
+    const t = getTopic(p.id);
+    const answers = b.answers || {};
+    let score = 0;
+    const results = questions.filter((q) => q.topic_id === t.id).map((q) => {
+      const chosen = Number.isInteger(answers[q.id]) ? answers[q.id] : null;
+      const correct = chosen === q.answer;
+      if (correct) score++;
+      return { id: q.id, chosen, answer: q.answer, correct, explanation: q.explanation };
+    });
+    const firstToday = !db.attempts.some((a) => a.user_id === u.id && a.topic_id === t.id && a.at >= todayStart());
+    const earned = firstToday ? results.length : 0;
+    db.attempts.push({ user_id: u.id, topic_id: t.id, score, total: results.length, at: Date.now() });
+    if (earned) addPoints(u.id, earned, 'quiz');
+    save();
+    return { score, total: results.length, results, earned, points: wallet(u.id).points };
+  });
+
+  route('GET', '/api/topics/:id', async (_, p) => {
+    const u = requireUser();
+    const t = getTopic(p.id);
+    const s = subjectOf(t.id);
+    return { topic: { id: t.id, title: t.title, summary: t.summary, subject: { slug: s.slug, name: s.name, symbol: s.symbol },
+      primer: t.primer, terms: t.terms, questions: t.questions,
+      cards: cards.filter((c) => c.topic_id === t.id).length,
+      quizLength: questions.filter((q) => q.topic_id === t.id).length,
+      previewedAt: db.previewed[k(u.id, t.id)] || null } };
+  });
+
+  route('POST', '/api/topics/:id/preview', async (_, p) => {
+    const u = requireUser();
+    const t = getTopic(p.id);
+    const now = Date.now();
+    if (!db.previewed[k(u.id, t.id)]) db.previewed[k(u.id, t.id)] = now;
+    let added = 0;
+    cards.filter((c) => c.topic_id === t.id).forEach((c) => {
+      if (!db.deck[k(u.id, c.id)]) { db.deck[k(u.id, c.id)] = { ease: 2.5, interval_d: 0, reps: 0, due_at: now }; added++; }
+    });
+    save();
+    return { ok: true, added };
+  });
+
+  route('GET', '/api/review', async (_, __, path) => {
+    const u = requireUser();
+    const subject = new URLSearchParams(path.split('?')[1] || '').get('subject');
+    const now = Date.now();
+    const rows = deckFor(u.id).filter((d) => d.due_at <= now)
+      .map((d) => ({ d, c: cards.find((c) => c.id === d.card_id) }))
+      .filter(({ c }) => !subject || subjectOf(c.topic_id).slug === subject)
+      .sort((a, b) => a.d.due_at - b.d.due_at).slice(0, 30);
+    return { cards: rows.map(({ d, c }) => {
+      const t = topicOfCard(c.id); const s = subjectOf(t.id);
+      return { id: c.id, front: c.front, back: c.back, topic: t.title, subject: s.name, symbol: s.symbol, next: SRS.preview(d, now) };
+    }) };
+  });
+
+  route('POST', '/api/review/:cardId', async (b, p) => {
+    const u = requireUser();
+    if (![0, 1, 2, 3].includes(b.grade)) throw new HttpError(400, 'Grade must be 0, 1, 2 or 3.');
+    const key = k(u.id, Number(p.cardId));
+    const st = db.deck[key];
+    if (!st) throw new HttpError(404, 'That card is not in your review deck.');
+    const now = Date.now();
+    const next = SRS.schedule(st, b.grade, now);
+    db.deck[key] = { ...next, last_grade: b.grade };
+    db.log.push({ user_id: u.id, card_id: Number(p.cardId), grade: b.grade, at: now });
+    addPoints(u.id, 1, 'review');
+    save();
+    return { ok: true, dueAt: next.due_at, earned: 1, points: wallet(u.id).points };
+  });
+
+  route('GET', '/api/game', async () => gameState(requireUser().id));
+
+  route('POST', '/api/game/start', async () => {
+    const u = requireUser();
+    const w = wallet(u.id);
+    if (w.points < GAME_COST) throw new HttpError(402, `You need ${GAME_COST} points to play. Answer ${GAME_COST - w.points} more questions to earn them.`);
+    const now = Date.now();
+    Object.values(db.runs).forEach((r) => { if (r.user_id === u.id && r.ended_at == null) r.ended_at = now; });
+    // keep storage small: drop finished runs
+    Object.keys(db.runs).forEach((id) => { if (db.runs[id].ended_at != null) delete db.runs[id]; });
+    addPoints(u.id, -GAME_COST, 'game');
+    const id = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    db.runs[id] = { id, user_id: u.id, level: w.game_level, started_at: now, last_clear_at: now, ended_at: null };
+    save();
+    return { runId: id, ...gameState(u.id) };
+  });
+
+  route('POST', '/api/game/clear', async (b) => {
+    const u = requireUser();
+    const run = activeRun(u.id, b.runId);
+    const level = b.level;
+    if (!Number.isInteger(level) || level !== run.level) throw new HttpError(400, 'That is not the level you are playing.');
+    const now = Date.now();
+    if (now - run.last_clear_at < MIN_LEVEL_MS) throw new HttpError(400, 'That was too fast to count. Play the level properly.');
+    const w = wallet(u.id);
+    let prize = false;
+    if (level >= GAME_LEVELS) {
+      prize = w.champion_at == null;
+      if (prize) { addPoints(u.id, GRAND_PRIZE, 'grand prize'); w.champion_at = now; w.badge_tier = Math.max(w.badge_tier, 1); }
+      w.game_level = 1;
+      run.ended_at = now; run.last_clear_at = now;
+    } else {
+      w.game_level = Math.max(w.game_level, level + 1);
+      run.level = level + 1; run.last_clear_at = now;
+    }
+    save();
+    return { cleared: level, nextLevel: level >= GAME_LEVELS ? null : level + 1, grandPrizeAwarded: prize, ...gameState(u.id) };
+  });
+
+  route('POST', '/api/badge/upgrade', async () => {
+    const u = requireUser();
+    const w = wallet(u.id);
+    if (w.badge_tier < 1) throw new HttpError(403, 'Beat level 5 first to win the champion badge.');
+    if (w.badge_tier >= BADGE_TIERS.length) throw new HttpError(409, 'Your badge is already at the top tier.');
+    const nxt = BADGE_TIERS[w.badge_tier];
+    if (w.points < nxt.cost) throw new HttpError(402, `You need ${nxt.cost} points for ${nxt.name} (${nxt.cost - w.points} more).`);
+    w.badge_tier += 1;
+    addPoints(u.id, -nxt.cost, 'badge tier ' + nxt.tier);
+    save();
+    return { upgraded: nxt.tier, ...gameState(u.id) };
+  });
+
+  route('POST', '/api/game/end', async (b) => {
+    const u = requireUser();
+    const r = db.runs[String(b.runId)];
+    if (r && r.user_id === u.id && r.ended_at == null) { r.ended_at = Date.now(); save(); }
+    return { ok: true, ...gameState(u.id) };
+  });
+
+  async function handle(method, path, body) {
+    for (const r of routes) {
+      if (r.method !== method) continue;
+      const m = path.match(r.re);
+      if (!m) continue;
+      const params = Object.fromEntries(r.keys.map((key, i) => [key, decodeURIComponent(m[i + 1])]));
+      try { return { status: 200, data: await r.fn(body || {}, params, path) }; }
+      catch (e) { return { status: e.status || 500, data: { error: e.status ? e.message : 'Something went wrong.' } }; }
+    }
+    return { status: 404, data: { error: 'No such endpoint.' } };
+  }
+
+  function resetDemo() { db = blank(); save(); }
+
+  return { handle, resetDemo, DAY };
+})();
+
+/* A*Board champion badges ("Print Shop" set): one printing technique per tier.
+   AStarBadges.svg(tier, size) returns inline SVG markup; ids are made unique
+   per call so several copies can share a page. */
+(function () {
+  'use strict';
+  let seq = 0;
+  const STAR = (cx, cy, r, fill) => {
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const a = Math.PI / 2 * 3 + (i * Math.PI) / 5;
+      const rr = i % 2 ? r * 0.42 : r;
+      pts.push((cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1));
+    }
+    return `<polygon points="${pts.join(' ')}" fill="${fill}"/>`;
+  };
+  const BURST_OUT = '100.0,6.0 117.4,24.0 140.8,15.3 148.6,39.0 173.5,41.4 170.3,66.2 191.6,79.1 178.0,100.0 191.6,120.9 170.3,133.8 173.5,158.6 148.6,161.0 140.8,184.7 117.4,176.0 100.0,194.0 82.6,176.0 59.2,184.7 51.4,161.0 26.5,158.6 29.7,133.8 8.4,120.9 22.0,100.0 8.4,79.1 29.7,66.2 26.5,41.4 51.4,39.0 59.2,15.3 82.6,24.0';
+  const BURST_IN = '100.0,16.0 115.4,32.7 136.4,24.3 143.0,46.1 165.7,47.6 162.2,70.1 181.9,81.3 169.0,100.0 181.9,118.7 162.2,129.9 165.7,152.4 143.0,153.9 136.4,175.7 115.4,167.3 100.0,184.0 84.6,167.3 63.6,175.7 57.0,153.9 34.3,152.4 37.8,129.9 18.1,118.7 31.0,100.0 18.1,81.3 37.8,70.1 34.3,47.6 57.0,46.1 63.6,24.3 84.6,32.7';
+  const SCALLOP = 'M172.0 92.0A10.5 10.5 0 0 1 169.1 112.3A10.5 10.5 0 0 1 160.6 130.9A10.5 10.5 0 0 1 147.1 146.4A10.5 10.5 0 0 1 129.9 157.5A10.5 10.5 0 0 1 110.2 163.3A10.5 10.5 0 0 1 89.8 163.3A10.5 10.5 0 0 1 70.1 157.5A10.5 10.5 0 0 1 52.9 146.4A10.5 10.5 0 0 1 39.4 130.9A10.5 10.5 0 0 1 30.9 112.3A10.5 10.5 0 0 1 28.0 92.0A10.5 10.5 0 0 1 30.9 71.7A10.5 10.5 0 0 1 39.4 53.1A10.5 10.5 0 0 1 52.9 37.6A10.5 10.5 0 0 1 70.1 26.5A10.5 10.5 0 0 1 89.8 20.7A10.5 10.5 0 0 1 110.2 20.7A10.5 10.5 0 0 1 129.9 26.5A10.5 10.5 0 0 1 147.1 37.6A10.5 10.5 0 0 1 160.6 53.1A10.5 10.5 0 0 1 169.1 71.7A10.5 10.5 0 0 1 172.0 92.0Z';
+  const SERIF = "font-family=\"'Instrument Serif', serif\" font-style=\"italic\"";
+  const MONO = "font-family=\"'Rubik Mono One', sans-serif\"";
+
+  const ART = {
+    1: (p) => `<defs>
+        <filter id="${p}r"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter>
+        <path id="${p}t" d="M 36 100 A 64 64 0 1 1 164 100"/><path id="${p}b" d="M 26 100 A 74 74 0 0 0 174 100"/></defs>
+      <g filter="url(#${p}r)" transform="rotate(-11 100 100)" opacity="0.94">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#1D2B6B" stroke-width="6"/>
+        <circle cx="100" cy="100" r="81" fill="none" stroke="#1D2B6B" stroke-width="1.5"/>
+        <text ${MONO} font-size="15" fill="#1D2B6B" letter-spacing="3"><textPath href="#${p}t" startOffset="50%" text-anchor="middle">CHAMPION</textPath></text>
+        <text ${MONO} font-size="11" fill="#1D2B6B" letter-spacing="2"><textPath href="#${p}b" startOffset="50%" text-anchor="middle">LEVEL 5 CLEARED</textPath></text>
+        ${STAR(28, 100, 9, '#1D2B6B')}${STAR(172, 100, 9, '#1D2B6B')}
+        <rect x="34" y="74" width="132" height="52" fill="#1D2B6B"/>
+        <text x="92" y="117" text-anchor="middle" ${SERIF} font-size="54" fill="#F4F0E8">A</text>
+        ${STAR(120, 92, 13, '#F4F0E8')}
+      </g>`,
+    2: (p) => `<defs>
+        <filter id="${p}s" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="3" dy="5" stdDeviation="3" flood-color="#1D2B6B" flood-opacity="0.3"/></filter>
+        <pattern id="${p}d" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.5" fill="#FFFFFF" opacity="0.45"/></pattern></defs>
+      <g transform="rotate(8 100 100)">
+        <polygon filter="url(#${p}s)" fill="#FFFFFF" points="${BURST_OUT}"/>
+        <polygon transform="translate(6 5)" fill="#0078BF" points="${BURST_IN}"/>
+        <polygon fill="#E0218A" points="${BURST_IN}"/>
+        <polygon fill="url(#${p}d)" points="${BURST_IN}"/>
+        <text x="94" y="121" text-anchor="middle" ${SERIF} font-size="80" fill="#1D2B6B">A</text>
+        <text x="90" y="117" text-anchor="middle" ${SERIF} font-size="80" fill="#FFFFFF">A</text>
+        ${STAR(132, 70, 16, '#1D2B6B')}${STAR(128, 66, 16, '#FFE600')}
+        <g transform="rotate(-6 100 144)"><rect x="62" y="134" width="76" height="20" rx="3" fill="#FFE600" stroke="#1D2B6B" stroke-width="2"/>
+        <text x="100" y="148" text-anchor="middle" ${MONO} font-size="10" fill="#1D2B6B" letter-spacing="1">PINK INK</text></g>
+      </g>`,
+    3: (p) => `<defs>
+        <pattern id="${p}w" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#0078BF"/><rect width="2.4" height="6" fill="#006AA9"/></pattern>
+        <filter id="${p}s"><feDropShadow dx="2" dy="4" stdDeviation="2.5" flood-color="#001067" flood-opacity="0.35"/></filter></defs>
+      <path filter="url(#${p}s)" d="M100 10 L178 36 L172 118 Q162 166 100 192 Q38 166 28 118 L22 36 Z" fill="#FFE600" stroke="#1D2B6B" stroke-width="3"/>
+      <path d="M100 22 L166 44 L161 116 Q152 156 100 179 Q48 156 39 116 L34 44 Z" fill="url(#${p}w)"/>
+      <path d="M100 22 L166 44 L161 116 Q152 156 100 179 Q48 156 39 116 L34 44 Z" fill="none" stroke="#FFF6B0" stroke-width="2" stroke-dasharray="5 4" transform="translate(100 100) scale(0.92) translate(-100 -100)"/>
+      <text x="92" y="118" text-anchor="middle" ${SERIF} font-size="70" fill="#FFE600" stroke="#B89A00" stroke-width="1" stroke-dasharray="3 2">A</text>
+      ${STAR(124, 76, 13, '#FFE600')}
+      <rect x="52" y="134" width="96" height="20" fill="#E0218A" stroke="#1D2B6B" stroke-width="2"/>
+      <text x="100" y="148" text-anchor="middle" ${MONO} font-size="9" fill="#FFFFFF" letter-spacing="1">OVERPRINT</text>
+      ${STAR(80, 48, 5, '#FFE600')}${STAR(100, 46, 5, '#FFE600')}${STAR(120, 48, 5, '#FFE600')}`,
+    4: (p) => `<defs>
+        <linearGradient id="${p}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8C6A12"/><stop offset="0.3" stop-color="#FFE27A"/><stop offset="0.5" stop-color="#C9A227"/><stop offset="0.7" stop-color="#FFF3B8"/><stop offset="1" stop-color="#9C7A1A"/></linearGradient>
+        <linearGradient id="${p}h" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8901F"/><stop offset="0.5" stop-color="#FFF0A0"/><stop offset="1" stop-color="#8C6A12"/></linearGradient>
+        <filter id="${p}s"><feDropShadow dx="2" dy="4" stdDeviation="2.5" flood-color="#5A4300" flood-opacity="0.35"/></filter></defs>
+      <path d="M78 130 L56 194 L70 184 L80 198 L98 140 Z" fill="#E0218A" stroke="#1D2B6B" stroke-width="2"/>
+      <path d="M122 130 L144 194 L130 184 L120 198 L102 140 Z" fill="#0078BF" stroke="#1D2B6B" stroke-width="2"/>
+      <path filter="url(#${p}s)" d="${SCALLOP}" fill="url(#${p}g)" stroke="#7A5C0C" stroke-width="1.5"/>
+      <circle cx="100" cy="92" r="52" fill="url(#${p}h)" stroke="#7A5C0C" stroke-width="1.5"/>
+      <circle cx="100" cy="92" r="45" fill="none" stroke="#7A5C0C" stroke-width="1" stroke-dasharray="1 4" stroke-linecap="round"/>
+      <text x="95.5" y="115.5" text-anchor="middle" ${SERIF} font-size="58" fill="#FFF8D0">A</text>
+      <text x="94" y="114" text-anchor="middle" ${SERIF} font-size="58" fill="#6B4F08">A</text>
+      ${STAR(123.5, 78.5, 11, '#FFF8D0')}${STAR(122, 77, 11, '#6B4F08')}
+      <text x="100" y="62" text-anchor="middle" ${MONO} font-size="7" fill="#6B4F08" letter-spacing="1.5">GOLD FOIL</text>`,
+    5: (p) => `<defs>
+        <linearGradient id="${p}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7AC6"/><stop offset="0.25" stop-color="#FFE600"/><stop offset="0.5" stop-color="#7CF0D8"/><stop offset="0.75" stop-color="#6FA8FF"/><stop offset="1" stop-color="#C58CFF"/></linearGradient>
+        <linearGradient id="${p}n" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.75"/><stop offset="0.65" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+        <pattern id="${p}l" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><rect width="3" height="8" fill="#FFFFFF" opacity="0.22"/></pattern></defs>
+      <g transform="rotate(7 100 100)">
+        <g class="holo-face"><rect x="42" y="12" width="116" height="176" rx="12" fill="url(#${p}c)" stroke="#FFFFFF" stroke-width="3"/></g>
+        <rect x="42" y="12" width="116" height="176" rx="12" fill="url(#${p}l)"/>
+        <rect x="52" y="22" width="96" height="156" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
+        <text x="60" y="40" ${MONO} font-size="8" fill="#1D2B6B">No. 05/05</text>
+        <text x="92" y="124" text-anchor="middle" ${SERIF} font-size="74" fill="#1D2B6B">A</text>
+        ${STAR(124, 80, 14, '#1D2B6B')}
+        <text x="100" y="166" text-anchor="middle" ${MONO} font-size="8" fill="#1D2B6B" letter-spacing="1">HOLOGRAPHIC</text>
+        <rect class="holo-shine" x="42" y="12" width="116" height="176" rx="12" fill="url(#${p}n)"/>
+      </g>
+      <path d="M30 40 L33 50 L43 53 L33 56 L30 66 L27 56 L17 53 L27 50 Z" fill="#FFE600" stroke="#1D2B6B" stroke-width="1"/>
+      <path d="M172 140 L174 147 L181 149 L174 151 L172 158 L170 151 L163 149 L170 147 Z" fill="#E0218A"/>`,
+  };
+  const NAMES = { 1: 'Rubber Stamp', 2: 'Riso Sticker', 3: 'Stitched Patch', 4: 'Foil Seal', 5: 'Holo Card' };
+
+  function svg(tier, size, label) {
+    const t = Math.max(1, Math.min(5, tier | 0));
+    const p = 'bdg' + (++seq) + '-';
+    const a11y = label === false ? 'aria-hidden="true"' : `role="img" aria-label="${label || NAMES[t] + ' badge'}"`;
+    return `<svg class="badge-art tier-${t}" viewBox="0 0 200 200" width="${size}" height="${size}" ${a11y}>${ART[t](p)}</svg>`;
+  }
+  window.AStarBadges = { svg, NAMES };
+})();
+
+/* Print Breaker — the A*Board reward game.
+   A canvas brick-breaker in five levels, drawn like a two-colour riso print.
+   The page (app.js) owns points, runs and overlays; this file only plays. */
+(function () {
+  'use strict';
+
+  const W = 800, H = 520;
+  const C = { paper: '#F4F0E8', paper2: '#EAE4D8', ink: '#1D2B6B', pink: '#E0218A', blue: '#0078BF', yellow: '#FFE600', over: '#001067' };
+  // Bricks: p pink, b blue, y yellow (1 hit) · N navy (2 hits) · X overprint (3 hits) · . empty
+  const LEVELS = [
+    { name: 'Warm-up', speed: 5.0, rows: ['pppppppppp', 'bbbbbbbbbb', 'yyyyyyyyyy', 'pppppppppp'] },
+    { name: 'Checkerboard', speed: 5.6, rows: ['NNNNNNNNNN', 'pbpbpbpbpb', 'bpbpbpbpbp', 'ypypypypyp', 'pypypypypy'] },
+    { name: 'Pyramid', speed: 6.2, rows: ['....NN....', '...NppN...', '..NbbbbN..', '.NyyyyyyN.', 'NppppppppN'] },
+    { name: 'Zigzag', speed: 6.8, rows: ['N.N.N.N.N.', 'pNpNpNpNpN', 'b.b.b.b.b.', 'yXyXyXyXyX', 'p.p.p.p.p.', 'NbNbNbNbNb'] },
+    { name: 'The A*', speed: 7.4, rows: ['..XXXX..y.', '.XX..XXyyy', '.XX..XX.y.', '.XXXXXX...', '.XX..XX...', '.XX..XX...'] },
+  ];
+  const COLS = 10, BRICK_GAP = 6, SIDE = 40, TOP = 64, BRICK_H = 24;
+  const BRICK_W = (W - SIDE * 2 - BRICK_GAP * (COLS - 1)) / COLS;
+  const HITS = { p: 1, b: 1, y: 1, N: 2, X: 3 };
+  const FILL = { p: C.pink, b: C.blue, y: C.yellow, N: C.ink, X: C.over };
+
+  class PrintBreaker {
+    constructor(canvas, opts) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d');
+      this.opts = Object.assign({ lives: 3, reduced: false, onHud() {}, onClear() {}, onOver() {} }, opts);
+      this.state = 'idle';      // idle · ready · playing · cleared · over
+      this.particles = [];
+      this.trail = [];
+      this.shake = 0;
+      this.keys = { left: false, right: false };
+      this.raf = 0;
+      this.last = 0;
+      this.dotPattern = this.makeDots();
+      this.resize();
+
+      this.onPointer = (e) => {
+        const r = this.canvas.getBoundingClientRect();
+        this.paddle.target = ((e.clientX - r.left) / r.width) * W;
+      };
+      this.onDown = (e) => { this.onPointer(e); this.launch(); };
+      this.onKey = (e) => {
+        if (e.target.closest && e.target.closest('input, textarea')) return;
+        const down = e.type === 'keydown';
+        if (e.key === 'ArrowLeft' || e.key === 'a') { this.keys.left = down; e.preventDefault(); }
+        if (e.key === 'ArrowRight' || e.key === 'd') { this.keys.right = down; e.preventDefault(); }
+        if (down && (e.key === ' ' || e.key === 'ArrowUp') && (this.state === 'ready' || this.state === 'playing')) { e.preventDefault(); this.launch(); }
+      };
+      this.onResize = () => this.resize();
+      canvas.addEventListener('pointermove', this.onPointer);
+      canvas.addEventListener('pointerdown', this.onDown);
+      window.addEventListener('keydown', this.onKey);
+      window.addEventListener('keyup', this.onKey);
+      window.addEventListener('resize', this.onResize);
+
+      this.load(this.opts.level || 1, true);
+      this.loop = this.loop.bind(this);
+      this.raf = requestAnimationFrame(this.loop);
+    }
+
+    resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.canvas.width = W * dpr;
+      this.canvas.height = H * dpr;
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    makeDots() {
+      const c = document.createElement('canvas');
+      c.width = c.height = 16;
+      const x = c.getContext('2d');
+      x.fillStyle = 'rgba(224, 33, 138, 0.10)';
+      x.beginPath(); x.arc(8, 8, 2.2, 0, Math.PI * 2); x.fill();
+      return this.ctx.createPattern(c, 'repeat');
+    }
+
+    /* Set up a level. preview=true shows it without a live ball. */
+    load(level, preview) {
+      this.level = Math.max(1, Math.min(LEVELS.length, level));
+      const L = LEVELS[this.level - 1];
+      this.baseSpeed = L.speed;
+      this.bricks = [];
+      L.rows.forEach((row, r) => [...row].forEach((ch, c) => {
+        if (!HITS[ch]) return;
+        this.bricks.push({ x: SIDE + c * (BRICK_W + BRICK_GAP), y: TOP + r * (BRICK_H + BRICK_GAP), w: BRICK_W, h: BRICK_H, kind: ch, hits: HITS[ch], max: HITS[ch], flash: 0 });
+      }));
+      this.paddle = { x: W / 2, target: W / 2, w: 120, h: 14, y: H - 42, squash: 0 };
+      this.lives = preview ? this.opts.lives : this.lives ?? this.opts.lives;
+      this.resetBall();
+      this.state = preview ? 'idle' : 'ready';
+      this.hud();
+    }
+
+    start(level) {
+      this.lives = this.opts.lives;
+      this.load(level, false);
+    }
+
+    nextLevel(level) {
+      this.load(level, false);   // lives carry over within a run
+    }
+
+    resetBall() {
+      this.ball = { x: this.paddle.x, y: this.paddle.y - 16, vx: 0, vy: 0, r: 9, stuck: true, speed: this.baseSpeed };
+      this.trail = [];
+    }
+
+    launch() {
+      if (this.state === 'ready') this.state = 'playing';
+      if (this.state !== 'playing' || !this.ball.stuck) return;
+      const a = (Math.random() * 0.6 - 0.3);
+      this.ball.vx = Math.sin(a) * this.ball.speed;
+      this.ball.vy = -Math.cos(a) * this.ball.speed;
+      this.ball.stuck = false;
+    }
+
+    hud() {
+      this.opts.onHud({ level: this.level, levelName: LEVELS[this.level - 1].name, lives: this.lives, bricks: this.bricks.length, state: this.state });
+    }
+
+    burst(x, y, color, n) {
+      const count = this.opts.reduced ? Math.ceil(n / 3) : n;
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2, s = 1.5 + Math.random() * 4.5;
+        this.particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.5, life: 1, size: 3 + Math.random() * 5, color });
+      }
+    }
+
+    kick(amount) { if (!this.opts.reduced) this.shake = Math.max(this.shake, amount); }
+
+    update(k) {
+      const p = this.paddle;
+      if (this.keys.left) p.target -= 11 * k;
+      if (this.keys.right) p.target += 11 * k;
+      p.target = Math.max(p.w / 2, Math.min(W - p.w / 2, p.target));
+      p.x += (p.target - p.x) * Math.min(1, 0.35 * k);
+      p.squash *= Math.pow(0.85, k);
+
+      const b = this.ball;
+      if (b.stuck) { b.x = p.x; b.y = p.y - 16; }
+      else if (this.state === 'playing') {
+        const steps = Math.ceil(b.speed / 3);
+        for (let s = 0; s < steps && this.state === 'playing'; s++) this.step(k / steps);
+        this.trail.push({ x: b.x, y: b.y });
+        if (this.trail.length > 10) this.trail.shift();
+      }
+
+      for (const q of this.particles) { q.x += q.vx * k; q.y += q.vy * k; q.vy += 0.18 * k; q.life -= 0.025 * k; }
+      this.particles = this.particles.filter((q) => q.life > 0);
+      for (const br of this.bricks) br.flash = Math.max(0, br.flash - 0.08 * k);
+      this.shake *= Math.pow(0.86, k);
+    }
+
+    step(k) {
+      const b = this.ball, p = this.paddle;
+      b.x += b.vx * k; b.y += b.vy * k;
+      if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx); }
+      if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx); }
+      if (b.y < b.r) { b.y = b.r; b.vy = Math.abs(b.vy); }
+
+      // Paddle: the further from centre you hit, the sharper the angle.
+      if (b.vy > 0 && b.y + b.r >= p.y && b.y - b.r <= p.y + p.h && b.x >= p.x - p.w / 2 - b.r && b.x <= p.x + p.w / 2 + b.r) {
+        const off = Math.max(-1, Math.min(1, (b.x - p.x) / (p.w / 2)));
+        b.speed = Math.min(this.baseSpeed * 1.35, b.speed * 1.015);
+        const a = off * (Math.PI / 3);
+        b.vx = Math.sin(a) * b.speed; b.vy = -Math.cos(a) * b.speed;
+        b.y = p.y - b.r;
+        p.squash = 1;
+        this.burst(b.x, p.y, C.ink, 5);
+      }
+
+      // Bricks
+      for (const br of this.bricks) {
+        const cx = Math.max(br.x, Math.min(b.x, br.x + br.w));
+        const cy = Math.max(br.y, Math.min(b.y, br.y + br.h));
+        const dx = b.x - cx, dy = b.y - cy;
+        if (dx * dx + dy * dy > b.r * b.r) continue;
+        const overlapX = b.r - Math.abs(dx), overlapY = b.r - Math.abs(dy);
+        if (dx === 0 && dy === 0) b.vy = -b.vy;
+        else if (overlapX < overlapY) { b.vx = dx > 0 ? Math.abs(b.vx) : -Math.abs(b.vx); }
+        else { b.vy = dy > 0 ? Math.abs(b.vy) : -Math.abs(b.vy); }
+        br.hits -= 1;
+        br.flash = 1;
+        if (br.hits <= 0) {
+          this.burst(br.x + br.w / 2, br.y + br.h / 2, FILL[br.kind], 14);
+          this.burst(br.x + br.w / 2, br.y + br.h / 2, C.yellow, 4);
+          this.kick(7);
+          this.bricks.splice(this.bricks.indexOf(br), 1);
+          this.hud();
+          if (!this.bricks.length) {
+            this.state = 'cleared';
+            this.burst(b.x, b.y, C.pink, 30); this.burst(b.x, b.y, C.blue, 30);
+            this.kick(12);
+            this.hud();
+            this.opts.onClear(this.level);
+          }
+        } else {
+          this.burst(b.x, b.y, C.paper, 6);
+          this.kick(3);
+        }
+        break;
+      }
+
+      // Ball lost
+      if (b.y - b.r > H) {
+        this.lives -= 1;
+        this.kick(14);
+        this.burst(b.x, H - 6, C.pink, 18);
+        if (this.lives <= 0) {
+          this.state = 'over';
+          this.hud();
+          this.opts.onOver(this.level);
+        } else {
+          this.resetBall();
+          this.state = 'ready';
+          this.hud();
+        }
+      }
+    }
+
+    draw() {
+      const x = this.ctx;
+      x.save();
+      x.fillStyle = C.paper; x.fillRect(0, 0, W, H);
+      x.fillStyle = this.dotPattern; x.fillRect(0, 0, W, H);
+      if (this.shake > 0.3) x.translate((Math.random() - 0.5) * this.shake, (Math.random() - 0.5) * this.shake);
+
+      // bricks with a misregistered pink/blue shadow
+      for (const br of this.bricks) {
+        x.fillStyle = br.kind === 'p' ? C.blue : C.pink;
+        x.globalAlpha = 0.55;
+        x.fillRect(br.x + 4, br.y + 4, br.w, br.h);
+        x.globalAlpha = 1;
+        x.fillStyle = FILL[br.kind];
+        x.fillRect(br.x, br.y, br.w, br.h);
+        if (br.max > 1) {   // cracks show remaining hits
+          x.strokeStyle = 'rgba(244,240,232,0.85)'; x.lineWidth = 2;
+          for (let i = 0; i < br.max - br.hits; i++) {
+            x.beginPath(); x.moveTo(br.x + 10 + i * 18, br.y + 3); x.lineTo(br.x + 18 + i * 18, br.y + br.h / 2); x.lineTo(br.x + 12 + i * 18, br.y + br.h - 3); x.stroke();
+          }
+        }
+        if (br.flash > 0) { x.fillStyle = `rgba(255,255,255,${br.flash * 0.8})`; x.fillRect(br.x, br.y, br.w, br.h); }
+        x.strokeStyle = C.ink; x.lineWidth = 2; x.strokeRect(br.x, br.y, br.w, br.h);
+      }
+
+      // paddle: an ink roller that squashes on impact
+      const p = this.paddle, sq = p.squash;
+      const pw = p.w * (1 + sq * 0.12), ph = p.h * (1 - sq * 0.3);
+      x.fillStyle = C.pink; x.fillRect(p.x - pw / 2 + 5, p.y + 5, pw, ph);
+      x.fillStyle = C.ink; x.fillRect(p.x - pw / 2, p.y, pw, ph);
+      x.fillStyle = C.yellow; x.fillRect(p.x - pw / 2 + 8, p.y + 3, pw - 16, 2);
+
+      // ball trail and ball (a yellow star-ball)
+      this.trail.forEach((t, i) => {
+        x.globalAlpha = (i + 1) / this.trail.length * 0.35;
+        x.fillStyle = i % 2 ? C.pink : C.blue;
+        x.beginPath(); x.arc(t.x, t.y, this.ball.r * ((i + 4) / 14), 0, Math.PI * 2); x.fill();
+      });
+      x.globalAlpha = 1;
+      const b = this.ball;
+      x.fillStyle = C.yellow; x.strokeStyle = C.ink; x.lineWidth = 2.5;
+      x.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 ? b.r * 0.55 : b.r * 1.25, a = -Math.PI / 2 + i * Math.PI / 5;
+        x[i ? 'lineTo' : 'moveTo'](b.x + Math.cos(a) * r, b.y + Math.sin(a) * r);
+      }
+      x.closePath(); x.fill(); x.stroke();
+
+      for (const q of this.particles) {
+        x.globalAlpha = Math.max(0, q.life);
+        x.fillStyle = q.color;
+        x.fillRect(q.x - q.size / 2, q.y - q.size / 2, q.size, q.size);
+      }
+      x.globalAlpha = 1;
+
+      if (this.state === 'ready' && this.ball.stuck) {
+        x.fillStyle = C.ink; x.font = '16px "Rubik Mono One", "Arial Black", sans-serif'; x.textAlign = 'center';
+        x.fillText('CLICK, TAP OR PRESS SPACE TO LAUNCH', W / 2, H - 80);
+      }
+      x.restore();
+    }
+
+    loop(t) {
+      const dt = this.last ? Math.min(50, t - this.last) : 16.7;
+      this.last = t;
+      if (!document.hidden) this.update(dt / 16.7);
+      this.draw();
+      this.raf = requestAnimationFrame(this.loop);
+    }
+
+    destroy() {
+      cancelAnimationFrame(this.raf);
+      this.canvas.removeEventListener('pointermove', this.onPointer);
+      this.canvas.removeEventListener('pointerdown', this.onDown);
+      window.removeEventListener('keydown', this.onKey);
+      window.removeEventListener('keyup', this.onKey);
+      window.removeEventListener('resize', this.onResize);
+    }
+  }
+
+  PrintBreaker.LEVELS = LEVELS.map((l) => l.name);
+  window.PrintBreaker = PrintBreaker;
+})();
+
+/* A*Board — single-page app (hash router, vanilla JS). */
+
+
+const view = document.getElementById('view');
+const nav = document.getElementById('nav');
+let me = null;
+let cleanup = null; // per-view teardown (e.g. keyboard listeners)
+const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* ------------------------------------------------------------- utilities */
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+
+async function api(path, opts = {}) {
+  const { status, data } = await MockServer.handle(opts.method || 'GET', path, opts.body);
+  if (status === 401 && !path.startsWith('/api/auth')) {
+    me = null;
+    renderNav();
+    location.hash = '#login';
+    throw new Error('auth');
+  }
+  if (status >= 400) throw new Error(data.error || 'Something went wrong.');
+  return data;
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.setAttribute('role', 'status');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+function setView(html, title) {
+  view.innerHTML = html;
+  document.title = title ? `${title} — A*Board` : 'A*Board';
+  view.focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+}
+
+/* ------------------------------------------------------------------- nav */
+
+let dueCount = 0;
+let points = null; // reward points, shown in the nav once known
+function setPoints(p, earned) {
+  if (typeof p !== 'number') return;
+  points = p;
+  const chip = document.getElementById('ptsChip');
+  if (chip) {
+    chip.textContent = `${p} pts`;
+    if (!REDUCED) { chip.classList.remove('bump'); void chip.offsetWidth; chip.classList.add('bump'); }
+  }
+  if (earned > 0) popPoints(earned);
+}
+function popPoints(n, at) {
+  const el = document.createElement('div');
+  el.className = 'pts-pop';
+  el.textContent = `+${n}`;
+  el.setAttribute('aria-hidden', 'true');
+  const chip = document.getElementById('ptsChip');
+  const r = at || (chip ? chip.getBoundingClientRect() : { left: innerWidth - 120, top: 20, width: 60, height: 20 });
+  el.style.left = (r.left + r.width / 2) + 'px';
+  el.style.top = (r.top + r.height + 6) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+// Champion badge: tier 1 is won in the game, tiers 2-5 are bought with points.
+function badgeHtml(b, id) {
+  if (!b || !b.tier) return '';
+  return `<span class="badge-chip tier-${b.tier}"${id ? ` id="${id}"` : ''}>${badgeArt(b.tier, 30, false)}<span>${esc(b.name)}</span></span>`;
+}
+const badgeArt = (tier, size, label) => (window.AStarBadges ? window.AStarBadges.svg(tier, size, label) : '');
+const BADGE_LADDER = [
+  { tier: 1, name: 'Rubber Stamp', how: 'Beat level 5', lives: 3, note: 'Rough navy ink' },
+  { tier: 2, name: 'Riso Sticker', cost: 20, lives: 3, note: 'Die-cut, off-register' },
+  { tier: 3, name: 'Stitched Patch', cost: 40, lives: 4, note: 'Embroidered twill' },
+  { tier: 4, name: 'Foil Seal', cost: 70, lives: 4, note: 'Embossed gold' },
+  { tier: 5, name: 'Holo Card', cost: 120, lives: 5, note: 'Shifting rainbow' },
+];
+
+function renderNav() {
+  const here = location.hash || '#board';
+  const cur = (prefix) => (here === prefix || (prefix !== '#board' && here.startsWith(prefix)) ? ' aria-current="page"' : '');
+  if (!me) {
+    nav.innerHTML = `<a href="#welcome">Home</a><a href="#login"${cur('#login')}>Sign in</a>
+      <a class="btn btn-small" href="#register">Subscribe free</a>`;
+    return;
+  }
+  nav.innerHTML = `
+    <a href="#board"${cur('#board')}>Board</a>
+    <a href="#subjects"${cur('#subject')}>Subjects</a>
+    <a href="#review"${cur('#review')}>Review${dueCount ? `<span class="badge" aria-label="${dueCount} due">${dueCount}</span>` : ''}</a>
+    <a href="#game"${cur('#game')} class="nav-game">Game<span class="pts-chip" id="ptsChip">${points ?? 0} pts</span></a>
+    <span class="label" style="text-transform:none">${esc(me.name)}</span>
+    <button class="btn btn-small" id="logout" type="button">Sign out</button>`;
+  document.getElementById('logout').onclick = async () => {
+    await api('/api/auth/logout', { method: 'POST', body: {} }).catch(() => {});
+    me = null;
+    points = null;
+    location.hash = '#welcome';
+    renderNav();
+  };
+}
+
+/* ----------------------------------------------------------------- views */
+
+function authView(mode) {
+  const isReg = mode === 'register';
+  setView(`
+    <div class="auth stack" style="gap:32px">
+      <div class="page-head" style="margin:0">
+        <span class="crumbs">${isReg ? 'New subscriber' : 'Welcome back'}</span>
+        <h1>${isReg ? 'Start your<br><span class="accent">first issue.</span>' : 'Welcome<br><span class="accent">back.</span>'}</h1>
+      </div>
+      <form class="box stack" id="authForm" novalidate style="gap:22px">
+        ${isReg ? `<div class="field"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required maxlength="60"></div>` : ''}
+        <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="password">Password${isReg ? ' (8+ characters)' : ''}</label>
+          <input id="password" name="password" type="password" autocomplete="${isReg ? 'new-password' : 'current-password'}" required minlength="${isReg ? 8 : 1}"></div>
+        <p class="error" id="authError" role="alert"></p>
+        <button class="btn btn-yellow" type="submit">${isReg ? 'Create my notebook' : 'Sign in'}</button>
+      </form>
+      <p class="muted">${isReg ? 'Already enrolled? <a href="#login">Sign in</a>.' : 'New here? <a href="#register">Create a free account</a>.'}</p>
+    </div>`, isReg ? 'Create account' : 'Sign in');
+
+  const form = document.getElementById('authForm');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(form));
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    try {
+      const { user } = await api(isReg ? '/api/auth/register' : '/api/auth/login', { method: 'POST', body });
+      me = user;
+      location.hash = '#board';
+    } catch (err) {
+      document.getElementById('authError').textContent = err.message;
+      btn.disabled = false;
+    }
+  };
+}
+
+function progressBar(inReview, mastered, total) {
+  return `<div class="progress" role="img" aria-label="${mastered} of ${total} cards mastered, ${inReview} in review">
+    <span class="p-review" data-w="${pct(inReview, total)}"></span><span class="p-master" data-w="${pct(mastered, total)}"></span></div>`;
+}
+function applyBars() {
+  // Two frames later, so the bars grow from empty instead of appearing full.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    view.querySelectorAll('.progress span[data-w]').forEach((s) => { s.style.width = s.dataset.w + '%'; });
+  }));
+}
+
+function subjectCard(s, i) {
+  const tilt = i % 3 === 1 ? ' tilt-r' : i % 3 === 2 ? ' tilt-l' : '';
+  return `
+    <a class="box subject-tile${tilt}" href="#subject-${esc(s.slug)}">
+      <div class="row between" style="align-items:flex-start"><span class="sym">${esc(s.name)}</span>${s.due ? `<span class="chip chip-yellow">${s.due} due</span>` : ''}</div>
+      <p class="muted" style="font-size:15px">${esc(s.blurb)}</p>
+      ${progressBar(s.in_review, s.mastered, s.cards)}
+      <span class="label" style="font-size:11px">${s.mastered}/${s.cards} mastered · ${s.topics} topics</span>
+    </a>`;
+}
+
+async function dashboardView() {
+  const d = await api('/api/dashboard');
+  dueCount = d.due;
+  points = d.points ?? points;
+  renderNav();
+  const playable = (d.points ?? 0) >= 5;
+  setView(`
+    <div class="page-head">
+      <span class="crumbs">${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+      <h1>${greeting()},<br><span class="accent">${esc(d.user.name)}.</span></h1>
+    </div>
+
+    <div class="grid" style="margin-bottom:56px">
+      <div class="box box-yellow stack">
+        <span class="step-tag">Due now</span>
+        <span class="stat"><span class="num accent">${d.due}</span><span class="muted">${d.due === 1 ? 'card' : 'cards'} ready for review</span></span>
+        ${d.due ? '<a class="btn btn-yellow" href="#review">Start review</a>' : '<p class="hand" style="font-size:28px">Nothing due. Preview a new topic ↓</p>'}
+      </div>
+      <div class="box stack tilt-r">
+        <span class="step-tag">Reviewed today</span>
+        <span class="stat"><span class="num">${d.reviewedToday}</span><span class="muted">answers from memory</span></span>
+      </div>
+      <div class="box stack tilt-l">
+        <span class="step-tag">Streak</span>
+        <span class="stat"><span class="num">${d.streak}</span><span class="muted">${d.streak === 1 ? 'day' : 'days'} in a row</span></span>
+      </div>
+    </div>
+
+    <div class="box box-pink-soft game-promo" style="margin-bottom:56px">
+      <div class="stack" style="gap:8px;flex:1 1 280px">
+        <span class="step-tag">Reward points ${badgeHtml(d.badge)}</span>
+        <span class="stat"><span class="num">${d.points ?? 0}</span><span class="muted">points · +${d.earnedToday ?? 0} earned today</span></span>
+        <p class="muted" style="font-size:15px;margin:0">+1 per review card · +1 per quiz question (first try of a topic each day) · 5 points = one run of Print Breaker.</p>
+      </div>
+      ${d.badge && d.badge.tier ? `<a class="promo-badge" href="#game" aria-label="Your badge: ${esc(d.badge.name)}">${badgeArt(d.badge.tier, 104, false)}</a>` : ''}
+      <a class="btn ${playable ? 'btn-yellow' : ''}" href="#game">${playable ? 'Play Print Breaker' : 'See the game'}</a>
+    </div>
+
+    <div class="row" style="align-items:flex-start;gap:48px;margin-bottom:56px">
+      <div class="stack" style="flex:1 1 360px">
+        <h2 class="h2" style="font-size:32px">Preview next</h2>
+        ${d.next.length ? `<ul class="list">${d.next.map((t) => `
+          <li><span><span class="label" style="display:block">${esc(t.subject)}</span><a href="#topic-${t.id}" class="hand" style="font-size:30px;text-decoration:none">${esc(t.title)}</a></span>
+          <a class="btn btn-small" href="#topic-${t.id}">Preview</a></li>`).join('')}</ul>`
+          : '<p class="empty">Every topic previewed. Impressive.</p>'}
+      </div>
+      <div class="stack" style="flex:1 1 360px">
+        <h2 class="h2" style="font-size:32px">Recent papers</h2>
+        ${d.recent.length ? `<ul class="list">${d.recent.map((r) => `
+          <li><span><span class="label" style="display:block">${esc(r.subject)}</span><a href="#quiz-${r.topic_id}" style="text-decoration:none">${esc(r.title)}</a></span>
+          <span class="hand accent" style="font-size:34px">${r.score}/${r.total}</span></li>`).join('')}</ul>`
+          : '<p class="empty">No practice papers sat yet.</p>'}
+      </div>
+    </div>
+
+    <div class="row between" style="margin-bottom:24px">
+      <h2 class="h2" style="font-size:32px">Your subjects</h2>
+      <div class="legend"><span><i class="l-review"></i>In review</span><span><i class="l-master"></i>Mastered (21+ day interval)</span></div>
+    </div>
+    <div class="grid-3">${d.subjects.map(subjectCard).join('')}</div>`, 'Board');
+  applyBars();
+}
+
+async function subjectsView() {
+  const d = await api('/api/dashboard');
+  dueCount = d.due;
+  renderNav();
+  setView(`
+    <div class="page-head"><span class="crumbs">The syllabus</span><h1>Subjects</h1></div>
+    <div class="grid-3">${d.subjects.map(subjectCard).join('')}</div>`, 'Subjects');
+  applyBars();
+}
+
+async function subjectView(slug) {
+  const { subject: s, topics } = await api(`/api/subjects/${encodeURIComponent(slug)}`);
+  setView(`
+    <div class="page-head">
+      <span class="crumbs"><a href="#subjects">Subjects</a> / ${esc(s.name)}</span>
+      <div class="row" style="gap:28px;align-items:flex-end">
+        <span class="hand accent" style="font-size:clamp(96px,12vw,160px);font-weight:700;line-height:0.75">${esc(s.symbol)}</span>
+        <h1>${esc(s.name)}</h1>
+      </div>
+      <p class="muted" style="font-size:20px;max-width:60ch">${esc(s.blurb)}</p>
+    </div>
+    <div class="stack" style="gap:24px">
+      ${topics.map((t, i) => `
+        <article class="box ${i % 2 ? 'tilt-r' : ''}" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center">
+          <div class="stack" style="flex:999 1 420px;min-width:0">
+            <span class="step-tag">Topic ${String(i + 1).padStart(2, '0')}</span>
+            <h3>${esc(t.title)}</h3>
+            <p class="muted">${esc(t.summary)}</p>
+            <div class="row" style="gap:8px">
+              ${t.previewed_at ? '<span class="chip chip-yellow">✓ Previewed</span>' : '<span class="chip">Not previewed</span>'}
+              <span class="chip">${t.cards} cards</span>
+              ${t.due ? `<span class="chip chip-yellow">${t.due} due</span>` : ''}
+              ${t.mastered ? `<span class="chip">${t.mastered} mastered</span>` : ''}
+              ${t.best != null ? `<span class="chip">Best paper ${Math.round(t.best * 100)}%</span>` : ''}
+            </div>
+          </div>
+          <div class="btn-row" style="flex:1 1 220px;justify-content:flex-end">
+            <a class="btn ${t.previewed_at ? '' : 'btn-yellow'}" href="#topic-${t.id}">${t.previewed_at ? 'Reread primer' : 'Preview'}</a>
+            <a class="btn" href="#quiz-${t.id}">Practice paper</a>
+          </div>
+        </article>`).join('')}
+    </div>
+    <div class="row" style="margin-top:40px">
+      <a class="btn btn-solid" href="#review-${esc(s.slug)}">Review ${esc(s.name)} cards</a>
+    </div>`, s.name);
+}
+
+function topicTabs(t, active) {
+  return `<nav class="tabs" role="tablist" aria-label="Topic sections">
+    <a role="tab" href="#topic-${t.id}" aria-selected="${active === 'preview'}">Preview</a>
+    <a role="tab" href="#quiz-${t.id}" aria-selected="${active === 'quiz'}">Practice paper</a>
+  </nav>`;
+}
+
+async function topicView(id) {
+  const { topic: t } = await api(`/api/topics/${Number(id)}`);
+  setView(`
+    <div class="page-head">
+      <span class="crumbs"><a href="#subjects">Subjects</a> / <a href="#subject-${esc(t.subject.slug)}">${esc(t.subject.name)}</a></span>
+      <h1>${esc(t.title)}</h1>
+      <p class="muted" style="font-size:20px;max-width:60ch">${esc(t.summary)}</p>
+    </div>
+    ${topicTabs(t, 'preview')}
+    <div class="primer">
+      <div class="primer-main">
+        ${t.primer.map((sec) => `<div><h2>${esc(sec.heading)}</h2><p>${esc(sec.body)}</p></div>`).join('')}
+        <div class="box-dashed stack" id="previewBox">
+          ${t.previewedAt
+            ? `<p class="hand accent" style="font-size:34px">✓ Previewed — ${t.cards} cards are in your review deck.</p>
+               <div class="btn-row"><a class="btn btn-yellow" href="#review-${esc(t.subject.slug)}">Review now</a><a class="btn" href="#quiz-${t.id}">Sit the practice paper</a></div>`
+            : `<p class="hand" style="font-size:32px">Done reading? Hand in the preview and ${t.cards} flashcards join your review deck.</p>
+               <div class="btn-row"><button class="btn btn-yellow" id="markPreview" type="button">I've previewed this topic</button></div>`}
+        </div>
+      </div>
+      <aside class="primer-side">
+        <div class="box box-yellow questions stack">
+          <span class="step-tag">Carry into the lecture</span>
+          <ol>${t.questions.map((q) => `<li>${esc(q)}</li>`).join('')}</ol>
+        </div>
+        <div class="stack">
+          <span class="label">Key terms</span>
+          <table class="terms"><tbody>${t.terms.map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>
+        </div>
+      </aside>
+    </div>`, t.title);
+
+  const btn = document.getElementById('markPreview');
+  if (btn) btn.onclick = async () => {
+    btn.disabled = true;
+    try {
+      const r = await api(`/api/topics/${t.id}/preview`, { method: 'POST', body: {} });
+      toast(`${r.added} cards added to your deck`);
+      topicView(t.id);
+    } catch (e) { btn.disabled = false; toast(e.message); }
+  };
+}
+
+async function quizView(id) {
+  const q = await api(`/api/topics/${Number(id)}/quiz`);
+  const t = { id: q.topic.id };
+  setView(`
+    <div class="page-head">
+      <span class="crumbs"><a href="#subjects">Subjects</a> / ${esc(q.topic.subject)}</span>
+      <h1>${esc(q.topic.title)}</h1>
+    </div>
+    ${topicTabs(t, 'quiz')}
+    <div class="row between" style="margin-bottom:28px;max-width:880px">
+      <span class="label">A Level practice · ${q.questions.length} questions · 1 mark each</span>
+      <span class="hand muted" style="font-size:26px">no notes. no peeking.</span>
+    </div>
+    <form class="quiz" id="quiz">
+      ${q.questions.map((qq, i) => `
+        <fieldset data-q="${qq.id}">
+          <legend>Question ${i + 1}</legend>
+          <p class="q-prompt">${esc(qq.prompt)}</p>
+          ${qq.options.map((o, j) => `
+            <label class="option" data-opt="${j}"><input type="radio" name="q${qq.id}" value="${j}" required><span>${esc(o)}</span></label>`).join('')}
+          <div class="verdict" hidden></div>
+        </fieldset>`).join('')}
+      <div class="row" id="quizFoot">
+        <button class="btn btn-yellow" type="submit">Hand in paper</button>
+        <span class="error" id="quizError" role="alert"></span>
+      </div>
+    </form>`, `${q.topic.title} — paper`);
+
+  const form = document.getElementById('quiz');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const answers = {};
+    let missing = 0;
+    q.questions.forEach((qq) => {
+      const sel = form.querySelector(`input[name="q${qq.id}"]:checked`);
+      if (sel) answers[qq.id] = Number(sel.value); else missing += 1;
+    });
+    if (missing) { document.getElementById('quizError').textContent = `${missing} question${missing > 1 ? 's' : ''} left blank.`; return; }
+    const r = await api(`/api/topics/${t.id}/quiz`, { method: 'POST', body: { answers } });
+    r.results.forEach((res) => {
+      const fs = form.querySelector(`fieldset[data-q="${res.id}"]`);
+      fs.querySelectorAll('input').forEach((inp) => { inp.disabled = true; });
+      fs.querySelector(`[data-opt="${res.answer}"]`).classList.add('is-correct');
+      if (!res.correct && res.chosen != null) fs.querySelector(`[data-opt="${res.chosen}"]`).classList.add('is-wrong');
+      const v = fs.querySelector('.verdict');
+      v.hidden = false;
+      v.className = 'verdict ' + (res.correct ? 'ok' : 'no');
+      v.textContent = (res.correct ? '✓ ' : '✗ ') + res.explanation;
+    });
+    document.getElementById('quizFoot').outerHTML = `
+      <div class="box box-yellow row between" style="gap:24px">
+        <div class="row" style="gap:20px;align-items:flex-end"><span class="score">${r.score}/${r.total}</span>
+          <span class="hand" style="font-size:32px">${r.score === r.total ? 'full marks.' : r.score >= r.total / 2 ? 'solid — review the misses.' : 'reread the primer, then try again.'}</span></div>
+        <p class="pts-line">${r.earned ? `<strong>+${r.earned} points</strong> for this paper` : 'No points this time: points come from the first sitting of a topic each day'} · <a href="#game">${r.points ?? points ?? 0} pts → play</a></p>
+        <div class="btn-row"><a class="btn" href="#topic-${t.id}">Back to primer</a><a class="btn btn-solid" href="#quiz-${t.id}" id="retry">Sit it again</a></div>
+      </div>`;
+    setPoints(r.points, r.earned);
+    document.getElementById('retry').onclick = (ev) => { ev.preventDefault(); quizView(t.id); };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+}
+
+// Rough self-check: share of the model answer's key words found in what the
+// learner typed. Only a hint; the learner still picks the grade.
+const STOP = new Set('the and for are was were that this with from into its it is be by of to in on at as an or a which when what how why who than then them they their there these those has have had not but can will would also only each per using used use one'.split(' '));
+function keywords(text) {
+  return (text.toLowerCase().normalize('NFKC').match(/[\p{L}\p{N}]+/gu) || [])
+    .filter((w) => /\p{N}/u.test(w) || (w.length > 2 && !STOP.has(w)));
+}
+function suggestGrade(typed, answer) {
+  const mine = keywords(typed);
+  if (!mine.length) return 0;
+  const want = [...new Set(keywords(answer))];
+  if (!want.length) return 2;
+  const has = (w) => mine.some((m) => m === w || (w.length > 4 && m.length > 4 && m.slice(0, 5) === w.slice(0, 5)));
+  const share = want.filter(has).length / want.length;
+  return share < 0.25 ? 0 : share < 0.55 ? 1 : 2;
+}
+
+async function reviewView(subject) {
+  const { cards } = await api('/api/review' + (subject ? `?subject=${encodeURIComponent(subject)}` : ''));
+  const queue = cards.slice();
+  const total = queue.length;
+  let done = 0;
+  let revealed = false;
+  let typed = '';
+
+  if (!total) {
+    dueCount = 0; renderNav();
+    setView(`
+      <div class="review cta" style="padding-top:40px">
+        <span class="label">Review${subject ? ' · ' + esc(subject) : ''}</span>
+        <h1 class="h2-hand">All caught up.</h1>
+        <p class="muted" style="font-size:20px">No cards are due right now. Preview a new topic to add more, or come back later.</p>
+        <div class="btn-row" style="justify-content:center"><a class="btn btn-yellow" href="#board">Back to my issue</a><a class="btn" href="#subjects">Browse subjects</a></div>
+      </div>`, 'Review');
+    return;
+  }
+
+  const render = () => {
+    const c = queue[0];
+    if (!c) {
+      setView(`
+        <div class="review cta" style="padding-top:40px">
+          <span class="label">Session complete</span>
+          <h1 class="h2-hand">${done} answered<br><span class="accent">from memory.</span></h1>
+          <p class="muted" style="font-size:20px">Each card is now scheduled for the moment you're about to forget it.</p>
+          <a class="btn btn-yellow" href="#board">Back to my issue</a>
+        </div>`, 'Review');
+      dueCount = 0; renderNav();
+      return;
+    }
+    const labels = ['Again', 'Hard', 'Good', 'Easy'];
+    const suggest = revealed ? suggestGrade(typed, c.back) : null;
+    setView(`
+      <div class="review">
+        <div class="row between">
+          <span class="label">${esc(c.symbol)} · ${esc(c.subject)} · ${esc(c.topic)}</span>
+          <span class="label">${Math.min(done + 1, total)} / ${total}</span>
+        </div>
+        <div class="progress"><span class="p-master" data-w="${pct(done, total)}"></span></div>
+        <div class="flash${revealed ? ' is-revealed' : ''}">
+          <p class="front">${esc(c.front)}</p>
+          ${revealed
+            ? `<div class="compare">
+                 <div class="stack"><span class="label">Your answer</span>
+                   <p class="mine${typed ? '' : ' is-empty'}">${typed ? esc(typed) : 'No answer typed'}</p></div>
+                 <div class="stack"><span class="label accent">Model answer</span>
+                   <p class="back">${esc(c.back)}</p></div>
+               </div>`
+            : `<form class="answer-form" id="answerForm">
+                 <label class="label" for="answerBox">Type your answer</label>
+                 <textarea id="answerBox" rows="3" placeholder="Write it from memory…">${esc(typed)}</textarea>
+                 <div class="btn-row">
+                   <button type="submit" class="btn btn-yellow">Check answer <span class="kbd">enter</span></button>
+                   <button type="button" class="btn" id="skip">I don't know</button>
+                 </div>
+               </form>`}
+        </div>
+        ${revealed
+          ? `<p class="label" style="text-align:center">Compare the two, then grade yourself${suggest != null ? ` · suggested: <span class="accent">${labels[suggest]}</span>` : ''}</p>
+             <div class="grades">${labels.map((l, g) => `
+               <button type="button" class="grade grade-${l.toLowerCase()}${g === suggest ? ' is-suggested' : ''}" data-g="${g}">${l}<small>${esc(c.next[g])} <span class="kbd">${g + 1}</span></small></button>`).join('')}</div>`
+          : `<p class="hand muted" style="font-size:26px;text-align:center">shift + enter for a new line.</p>`}
+      </div>`, 'Review');
+    applyBars();
+    const form = document.getElementById('answerForm');
+    if (form) {
+      const box = document.getElementById('answerBox');
+      form.onsubmit = (e) => { e.preventDefault(); typed = box.value.trim(); reveal(); };
+      box.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } };
+      document.getElementById('skip').onclick = () => { typed = ''; reveal(); };
+      box.focus();
+    }
+    view.querySelectorAll('.grade').forEach((b) => { b.onclick = () => grade(Number(b.dataset.g)); });
+    const sug = view.querySelector('.grade.is-suggested');
+    if (sug) sug.focus();
+  };
+
+  const reveal = () => { if (!revealed) { revealed = true; render(); } };
+  let busy = false;
+  const grade = async (g) => {
+    if (busy || !revealed) return;
+    busy = true;
+    const card = view.querySelector('.flash');
+    if (card && !REDUCED) {
+      card.classList.add(g === 0 ? 'fly-again' : 'fly-out');
+      await wait(g === 0 ? 300 : 240);
+    }
+    const c = queue.shift();
+    try {
+      const res = await api(`/api/review/${c.id}`, { method: 'POST', body: { grade: g } });
+      setPoints(res.points, res.earned);
+      if (g === 0) queue.push({ ...c, next: c.next }); // see it again this session
+      else done += 1;
+    } catch (e) { queue.unshift(c); toast(e.message); }
+    revealed = false;
+    typed = '';
+    busy = false;
+    render();
+  };
+
+  const onKey = (e) => {
+    if (e.target.closest && e.target.closest('input, textarea')) return;
+    if (revealed && ['1', '2', '3', '4'].includes(e.key)) grade(Number(e.key) - 1);
+  };
+  document.addEventListener('keydown', onKey);
+  cleanup = () => document.removeEventListener('keydown', onKey);
+  render();
+}
+
+/* ------------------------------------------------------------ reward game */
+
+async function gameView() {
+  let g = await api('/api/game');
+  setPoints(g.points);
+  const NAMES = (window.PrintBreaker && window.PrintBreaker.LEVELS) || ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+  let runId = null;
+  let busy = false;
+  let game = null;
+
+  setView(`
+    <div class="game-head">
+      <div>
+        <span class="crumbs">Reward game · ${g.cost} points a run</span>
+        <h1 class="game-title">Print <span class="accent">Breaker.</span></h1>
+      </div>
+      <div class="row" style="gap:10px;align-items:baseline">
+        <span class="game-points" id="gamePoints">${g.points}</span><span class="muted">points</span>
+        <span id="champSlot">${badgeHtml(g.badge)}</span>
+      </div>
+      <ol class="level-track" id="levelTrack" aria-label="Levels"></ol>
+    </div>
+
+    <div class="game-wrap" id="gameWrap">
+      <div class="game-hud" aria-live="polite">
+        <span id="hudLevel">Level 1</span><span id="hudLives">♥♥♥</span><span id="hudBricks"></span>
+      </div>
+      <canvas id="gameCanvas" tabindex="0" width="800" height="520" aria-label="Print Breaker game. Move with the mouse or arrow keys; click or press Space to launch the ball."></canvas>
+      <div class="game-overlay" id="gameOverlay"></div>
+    </div>
+
+    <div class="grid" style="margin-top:40px">
+      <div class="box stack">
+        <span class="step-tag">Earn points</span>
+        <p style="margin:0">+1 for every review card you grade.<br>+1 for every quiz question, on the first sitting of a topic each day.</p>
+      </div>
+      <div class="box stack tilt-r">
+        <span class="step-tag">Play</span>
+        <p style="margin:0">${g.cost} points buys a run with <span id="rulesLives">${g.lives}</span> lives. Move with the mouse, finger or ← →; click, tap or Space to launch. Cleared levels are saved as checkpoints.</p>
+      </div>
+      <div class="box box-yellow stack tilt-l">
+        <span class="step-tag">Grand prize</span>
+        <p style="margin:0">Beat level 5, <em>${esc(NAMES[4])}</em>, for <strong>+${g.grandPrize} points</strong> and the A* Champion badge. Then spend points to upgrade it.</p>
+      </div>
+    </div>
+
+    <section class="badge-panel box" id="badgePanel" aria-labelledby="badgeTitle"></section>`, 'Print Breaker');
+
+  const overlay = document.getElementById('gameOverlay');
+  const wrap = document.getElementById('gameWrap');
+  const fx = window.AStarFX || { burstAt() {}, confetti() {}, buzz() {} };
+
+  const drawTrack = (current) => {
+    document.getElementById('levelTrack').innerHTML = NAMES.map((n, i) => {
+      const lv = i + 1;
+      const cls = lv < current ? 'done' : lv === current ? 'current' : 'locked';
+      return `<li class="${cls}${lv === 5 ? ' prize' : ''}" title="${esc(n)}"><span>${lv === 5 ? '★' : lv}</span><em>${esc(n)}</em></li>`;
+    }).join('');
+  };
+  const refresh = (state) => {
+    g = { ...g, ...state };
+    document.getElementById('gamePoints').textContent = g.points;
+    document.getElementById('champSlot').innerHTML = badgeHtml(g.badge);
+    document.getElementById('rulesLives').textContent = g.lives;
+    if (game) game.opts.lives = g.lives;
+    setPoints(g.points);
+    renderBadge();
+  };
+
+  const panel = document.getElementById('badgePanel');
+  const renderBadge = () => {
+    const b = g.badge || { tier: 0 };
+    const nxt = b.next;
+    const ladder = BADGE_LADDER.map((t) => {
+      const st = t.tier <= b.tier ? 'owned' : (nxt && t.tier === nxt.tier) ? 'next' : 'locked';
+      const price = t.tier === 1 ? t.how : `${t.cost} pts`;
+      return `<li class="${st}"><span class="medal-art">${badgeArt(t.tier, 112, false)}</span>
+        <strong>${esc(t.name)}</strong><small>${esc(t.note)}</small><small class="price">${st === 'owned' ? '✓ Owned' : esc(price)} · ${t.lives} lives</small></li>`;
+    }).join('');
+    let action;
+    if (!b.tier) action = `<p class="muted" style="margin:0">Locked. Beat level 5 to win the badge, then upgrade it here.</p>`;
+    else if (!nxt) action = `<p style="margin:0"><strong>Top tier reached.</strong> Your badge is fully printed.</p>`;
+    else {
+      const short = nxt.cost - g.points;
+      action = `<button class="btn ${short > 0 ? '' : 'btn-yellow'}" type="button" id="upgradeBtn"${short > 0 ? ' disabled' : ''}>Upgrade to ${esc(nxt.name)} · ${nxt.cost} pts</button>
+        <p class="muted" style="margin:0">${short > 0 ? `${short} more point${short === 1 ? '' : 's'} needed. ` : ''}${nxt.lives > g.lives ? `Unlocks ${nxt.lives} lives per run.` : 'A new finish for your badge.'}</p>`;
+    }
+    panel.innerHTML = `
+      <div class="row between" style="gap:12px;align-items:baseline">
+        <h2 class="h2" id="badgeTitle" style="margin:0;font-size:34px">Champion badge</h2>
+        <span class="label">Tier ${b.tier || 0} / ${BADGE_LADDER.length}</span>
+      </div>
+      <ol class="badge-ladder">${ladder}</ol>
+      <div class="row" style="gap:16px">${action}</div>`;
+    const btn = document.getElementById('upgradeBtn');
+    if (btn) btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        const r = await api('/api/badge/upgrade', { method: 'POST', body: {} });
+        refresh(r);
+        toast(`Badge upgraded: ${r.badge.name}`);
+        const owned = panel.querySelectorAll('.badge-ladder li.owned');
+        const last = owned[owned.length - 1];
+        if (last) { last.classList.add('just'); fx.burstAt(last, 30); }
+        fx.confetti(panel, 4); fx.buzz();
+      } catch (e) { if (e.message !== 'auth') { toast(e.message); btn.disabled = false; } }
+    };
+  };
+  const show = (html) => { overlay.innerHTML = html; overlay.hidden = false; overlay.classList.remove('pop'); void overlay.offsetWidth; overlay.classList.add('pop'); };
+  const hide = () => { overlay.hidden = true; };
+  const playBtn = (label) => (g.points >= g.cost
+    ? `<button class="btn btn-yellow" type="button" data-act="play">${label} · ${g.cost} pts</button>`
+    : `<p class="muted" style="margin:0">You need ${g.cost - g.points} more point${g.cost - g.points === 1 ? '' : 's'}.</p><a class="btn" href="#review">Earn points in Review</a>`);
+
+  const startScreen = () => {
+    drawTrack(g.level);
+    show(`<span class="step-tag">Level ${g.level} of 5</span>
+      <h2 class="h2">${esc(NAMES[g.level - 1])}</h2>
+      <p class="muted">${g.level > 1 ? 'You continue from your checkpoint.' : 'Clear every brick to move on.'}</p>
+      <div class="btn-row">${playBtn('Play')}</div>`);
+  };
+
+  game = new PrintBreaker(document.getElementById('gameCanvas'), {
+    level: g.level,
+    lives: g.lives || 3,
+    reduced: REDUCED,
+    onHud(h) {
+      document.getElementById('hudLevel').textContent = `Level ${h.level} · ${h.levelName}`;
+      document.getElementById('hudLives').textContent = '♥'.repeat(Math.max(0, h.lives)) || '—';
+      document.getElementById('hudBricks').textContent = `${h.bricks} bricks`;
+    },
+    async onClear(level) {
+      fx.burstAt(wrap, 30); fx.buzz();
+      try {
+        const r = await api('/api/game/clear', { method: 'POST', body: { runId, level } });
+        refresh(r);
+        if (r.nextLevel) {
+          drawTrack(r.nextLevel);
+          show(`<span class="step-tag">Level ${level} cleared</span>
+            <h2 class="h2">Next: ${esc(NAMES[r.nextLevel - 1])}</h2>
+            <p class="muted">Checkpoint saved. Your lives carry over.</p>
+            <div class="btn-row"><button class="btn btn-yellow" type="button" data-act="next" data-level="${r.nextLevel}">Level ${r.nextLevel} →</button></div>`);
+          return;
+        }
+        runId = null;
+        drawTrack(6);
+        if (r.grandPrizeAwarded) {
+          show(`<div class="prize-stamp">${badgeArt(1, 128, 'Rubber Stamp champion badge')}</div>
+            <span class="step-tag">Grand prize</span>
+            <h2 class="h2">Champion!</h2>
+            <p><strong>+${g.grandPrize} points</strong> and the A* Champion badge are yours.</p>
+            <div class="btn-row"><button class="btn btn-yellow" type="button" data-act="badge">Upgrade my badge ↓</button>${playBtn('Play again')}</div>`);
+          overlay.classList.add('is-prize');
+          fx.confetti(wrap, 10);
+          popPoints(g.grandPrize, document.getElementById('gamePoints').getBoundingClientRect());
+        } else {
+          show(`<span class="step-tag">All five cleared</span>
+            <h2 class="h2">Beaten again.</h2>
+            <p class="muted">The grand prize is a one-off, but the glory isn't. The board resets to level 1.</p>
+            <div class="btn-row">${playBtn('Play again')}</div>`);
+          fx.confetti(wrap, 4);
+        }
+        g.level = 1;
+      } catch (e) {
+        if (e.message === 'auth') return;
+        show(`<span class="step-tag">Not counted</span><h2 class="h2">Hmm.</h2><p class="muted">${esc(e.message)}</p>
+          <div class="btn-row">${runId ? `<button class="btn btn-yellow" type="button" data-act="next" data-level="${level}">Replay level ${level}</button>` : playBtn('Play')}</div>`);
+      }
+    },
+    async onOver(level) {
+      const id = runId;
+      runId = null;
+      try { refresh(await api('/api/game/end', { method: 'POST', body: { runId: id } })); } catch (e) { /* ignore */ }
+      g.level = Math.max(1, Math.min(5, level));
+      drawTrack(g.level);
+      show(`<span class="step-tag">Out of ink</span>
+        <h2 class="h2">Game over.</h2>
+        <p class="muted">Your checkpoint is level ${g.level}, <em>${esc(NAMES[g.level - 1])}</em>.</p>
+        <div class="btn-row">${playBtn('Try again')}</div>`);
+    },
+  });
+
+  overlay.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-act]');
+    if (!b || busy) return;
+    busy = true;
+    b.disabled = true;
+    try {
+      if (b.dataset.act === 'play') {
+        const r = await api('/api/game/start', { method: 'POST', body: {} });
+        runId = r.runId;
+        refresh(r);
+        g.level = r.level;
+        drawTrack(r.level);
+        overlay.classList.remove('is-prize');
+        hide();
+        game.start(r.level);
+        wrap.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+        document.getElementById('gameCanvas').focus({ preventScroll: true });
+      } else if (b.dataset.act === 'badge') {
+        panel.scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' });
+        b.disabled = false;
+      } else if (b.dataset.act === 'next') {
+        hide();
+        game.nextLevel(Number(b.dataset.level));
+      }
+    } catch (err) {
+      if (err.message !== 'auth') { toast(err.message); b.disabled = false; }
+    } finally { busy = false; }
+  });
+
+  startScreen();
+  renderBadge();
+  cleanup = () => {
+    game.destroy();
+    if (runId) api('/api/game/end', { method: 'POST', body: { runId } }).catch(() => {});
+  };
+}
+
+/* ---------------------------------------------------------------- router */
+
+const landing = document.getElementById('landing');
+const appShell = document.getElementById('appShell');
+
+function relabel(a, signedIn, text, href) {
+  if (!a.dataset.label) a.dataset.label = a.textContent;
+  a.textContent = signedIn ? text : a.dataset.label;
+  a.href = href;
+}
+
+function showLanding() {
+  document.body.classList.add('landing');
+  appShell.hidden = true;
+  landing.hidden = false;
+
+  landing.querySelectorAll('[data-auth^="cta"]').forEach((a) => relabel(a, !!me, 'Open my issue', me ? '#board' : '#register'));
+  landing.querySelectorAll('[data-auth^="signin"]').forEach((a) => relabel(a, !!me, 'Go to my dashboard', me ? '#board' : '#login'));
+  document.title = 'A*Board';
+  window.scrollTo(0, 0);
+}
+
+async function router() {
+  if (cleanup) { cleanup(); cleanup = null; }
+  const name = location.hash.replace(/^#/, '');
+  if (name === 'welcome' || (!name && !me)) return showLanding();
+  document.body.classList.remove('landing');
+  landing.hidden = true;
+  appShell.hidden = false;
+
+  const publicRoute = name === 'login' || name === 'register';
+  if (!me && !publicRoute) { location.hash = '#login'; return; }
+  if (me && publicRoute) { location.hash = '#board'; return; }
+  renderNav();
+
+  const m = name.match(/^(subject|topic|quiz|review)-(.+)$/);
+  try {
+    if (name === 'login') return authView('login');
+    if (name === 'register') return authView('register');
+    if (!name || name === 'board') return await dashboardView();
+    if (name === 'subjects') return await subjectsView();
+    if (name === 'review') return await reviewView();
+    if (name === 'game') return await gameView();
+    if (m && m[1] === 'subject') return await subjectView(m[2]);
+    if (m && m[1] === 'topic') return await topicView(m[2]);
+    if (m && m[1] === 'quiz') return await quizView(m[2]);
+    if (m && m[1] === 'review') return await reviewView(m[2]);
+    setView('<div class="cta" style="padding-top:40px"><h1 class="h2-hand">Wrong room.</h1><a class="btn" href="#board">Back to the board</a></div>', 'Not found');
+  } catch (err) {
+    if (err.message === 'auth') return;
+    setView(`<div class="cta" style="padding-top:40px"><h1 class="h2-hand">Chalk snapped.</h1><p class="muted">${esc(err.message)}</p><a class="btn" href="#board">Back to the board</a></div>`, 'Error');
+  }
+}
+
+document.getElementById('resetDemo').addEventListener('click', () => {
+  MockServer.resetDemo();
+  me = null;
+  location.hash = '#welcome';
+  router();
+});
+
+(async function boot() {
+  try { ({ user: me } = await api('/api/me')); } catch { me = null; }
+  window.addEventListener('hashchange', router);
+  router();
+})();
+
+/* A*Board interaction effects: ink bursts on press, tilting glass cards,
+   landing parallax and number count-ups. Everything is skipped for people
+   who ask for reduced motion. */
+(function () {
+  'use strict';
+  const mq = (q) => window.matchMedia && window.matchMedia(q).matches;
+  const reduce = mq('(prefers-reduced-motion: reduce)');
+  const fine = mq('(pointer: fine)');
+  const INKS = ['#E0218A', '#0078BF', '#FFE600', '#1D2B6B'];
+
+  function burst(x, y, n) {
+    if (reduce) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'fx-burst';
+    wrap.setAttribute('aria-hidden', 'true');
+    wrap.style.left = x + 'px';
+    wrap.style.top = y + 'px';
+    for (let i = 0; i < n; i++) {
+      const dot = document.createElement('i');
+      const a = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+      const d = 28 + Math.random() * 46;
+      dot.style.setProperty('--dx', (Math.cos(a) * d).toFixed(1) + 'px');
+      dot.style.setProperty('--dy', (Math.sin(a) * d).toFixed(1) + 'px');
+      dot.style.setProperty('--s', (5 + Math.random() * 7).toFixed(1) + 'px');
+      dot.style.background = INKS[i % INKS.length];
+      wrap.appendChild(dot);
+    }
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 700);
+  }
+  const burstAt = (el, n) => { const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, n); };
+  const buzz = () => { try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) { /* not supported */ } };
+  // Confetti: several bursts spread across an element (used by the game).
+  const confetti = (el, rounds) => {
+    if (reduce) return;
+    const r = el.getBoundingClientRect();
+    for (let i = 0; i < (rounds || 6); i++) {
+      setTimeout(() => burst(r.left + Math.random() * r.width, r.top + Math.random() * r.height * 0.7, 22), i * 140);
+    }
+  };
+  window.AStarFX = { burst, burstAt, confetti, buzz };
+
+  // Press feedback: ink burst + a tiny haptic tap on phones.
+  const PUNCH = '.btn, .grade, .option, .tabs a, .subject-tile, .nav a';
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target.closest && e.target.closest(PUNCH);
+    if (!t) return;
+    burst(e.clientX, e.clientY, t.matches('.btn-yellow, .grade') ? 16 : 10);
+    buzz();
+  }, { passive: true });
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.btn, .grade')) burstAt(e.target, 14);
+    if (['1', '2', '3', '4'].includes(e.key) && !(e.target.closest && e.target.closest('input, textarea'))) {
+      const g = document.querySelector(`.grade[data-g="${Number(e.key) - 1}"]`);
+      if (g) burstAt(g, 16);
+    }
+  });
+
+  // Glass cards tilt toward the pointer, with a glare that follows it.
+  if (fine && !reduce) {
+    const SEL = '.grid > .box, .grid-3 > .box, .subject-tile, .z-glass, .z-steps .stack';
+    let current = null;
+    const reset = (el) => { if (el) { el.style.transform = ''; el.classList.remove('fx-tilt'); } };
+    document.addEventListener('pointermove', (e) => {
+      const el = e.target.closest ? e.target.closest(SEL) : null;
+      if (el !== current) { reset(current); current = el; }
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      el.classList.add('fx-tilt');
+      el.style.transform = `perspective(900px) rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg) translateY(-4px)`;
+      el.style.setProperty('--mx', ((px + 0.5) * 100).toFixed(1) + '%');
+      el.style.setProperty('--my', ((py + 0.5) * 100).toFixed(1) + '%');
+    }, { passive: true });
+    document.addEventListener('pointerleave', () => { reset(current); current = null; });
+
+    // Landing: riso shapes drift against the pointer.
+    window.addEventListener('pointermove', (e) => {
+      const cover = document.querySelector('.z-cover');
+      if (!cover) return;
+      cover.style.setProperty('--px', (e.clientX / window.innerWidth - 0.5).toFixed(3));
+      cover.style.setProperty('--py', (e.clientY / window.innerHeight - 0.5).toFixed(3));
+    }, { passive: true });
+  }
+
+  // Numbers count up when they appear; a perfect score earns a big burst.
+  function countUp(el) {
+    if (el.dataset.counted) return;
+    const m = el.textContent.trim().match(/^(\d+)(\/(\d+))?$/);
+    if (!m) return;
+    el.dataset.counted = '1';
+    const target = Number(m[1]);
+    const suffix = m[2] || '';
+    const perfect = m[3] && target === Number(m[3]) && target > 0;
+    if (reduce || target === 0) { if (perfect) burstAt(el, 28); return; }
+    const t0 = performance.now();
+    const dur = Math.min(900, 300 + target * 60);
+    el.textContent = '0' + suffix;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3))) + suffix;
+      if (k < 1) requestAnimationFrame(step);
+      else if (perfect) { burstAt(el, 28); buzz(); }
+    };
+    requestAnimationFrame(step);
+  }
+  function watch() {
+    const view = document.getElementById('view');
+    if (!view) return;
+    const scan = () => view.querySelectorAll('.stat .num, .score').forEach(countUp);
+    new MutationObserver(scan).observe(view, { childList: true, subtree: true });
+    scan();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+})();
+
+</script>
+</body>
+</html>
